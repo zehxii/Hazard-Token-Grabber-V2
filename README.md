@@ -44,7 +44,7 @@ replace main.py with the file name if you changed it
 3 folders and 1 file will be created, you can delete them all except for the dist folder
 go into the dist folder and there is your exe ready to be sent to victims!
 
-### ⚙・ More options
+###💾・ More options
 Add these into the command when creating the exe if you want
 
 |    Pyinstaller Options 		|
