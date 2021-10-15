@@ -1,0 +1,1 @@
+pip install requests psutil pywin32 pycryptodome 
