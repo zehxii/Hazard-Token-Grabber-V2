@@ -26,7 +26,9 @@ Love ❌ code ✅
  -  Password For Discord (You get Their Password if They Update it)
  -  Their Whole Credit Card (if They Put one in)
  -  All Their Chrome Passwords And Cookies
-> Webhook looks like [this](https://i.imgur.com/59ndajG.png)
+> Webhook looks like this:
+
+<p align="left"><img src="https://i.imgur.com/4KmwB6I.png"</p>
 
 ### 📁・Setting up Hazard Token Grabber.V2
 1. Start off by installing [python](https://www.python.org/) ofc
