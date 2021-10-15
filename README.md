@@ -8,7 +8,7 @@
 #### Hazard-Token-Grabber-V2 was made by
 Love ❌ code ✅
 
-## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 🌟Star This Repository If You Liked Hazard Token Grabber V2!
+## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 🌟Star This Repository If You Liked Hazard Token Grabber V2!
 
 ## upon running the file you will get the following sent to your webhook:
  -  Username
