@@ -237,9 +237,5 @@ class Hazard_Token_Grabber_V2:
                 zipped_file.write(absname, arcname)
         zipped_file.close()
 
-    def newPassword(self):
-        password_characters = string.ascii_letters 
-        return ''.join(random.choice(password_characters) for i in range(10))
-
 if __name__ == "__main__":
     Hazard_Token_Grabber_V2()
