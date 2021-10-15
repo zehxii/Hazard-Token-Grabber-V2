@@ -22,6 +22,7 @@ Love ❌ code ✅
  -  Region
  -  Country
  -  Google Maps Location
+ -  Screenshot of their pc
  -  All Their Valid Discord Tokens
  -  Password For Discord (You get Their Password if They Update it)
  -  Their Whole Credit Card (if They Put one in)
