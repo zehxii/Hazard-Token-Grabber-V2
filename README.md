@@ -9,8 +9,6 @@
 Love ❌ code ✅
 
 ## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 🌟Star This Repository If You Liked Hazard Token Grabber V2!
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FRdimo%2FHazard-Token-Grabber-V2.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FRdimo%2FHazard-Token-Grabber-V2?ref=badge_shield)
-
 
 ---
 
@@ -59,7 +57,3 @@ Add these into the command when creating the exe if you want
 | `--clean` Clean PyInstaller cache and remove temporary files before building	|
 | `--uac-admin` Requests admin privileges upon running the exe |
 | `--hidden-import MODULENAME` Name an import not visible in the code of the script. Can be used multiple times |
-
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FRdimo%2FHazard-Token-Grabber-V2.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FRdimo%2FHazard-Token-Grabber-V2?ref=badge_large)
