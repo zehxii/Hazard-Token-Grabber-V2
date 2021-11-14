@@ -33,12 +33,13 @@ Love ❌ code ✅
 
 ### 📁・Setting up Hazard Token Grabber.V2
 1. Start off by installing [python](https://www.python.org/) ofc
-2. run the `Install_requirements.cmd` and wait for it to install the requirements
-3. open main.py with any code editor of your choice and paste your webhook on line 7
-4. additionally [compile](https://github.com/Rdimo/Hazard-Token-Grabber-V2#compiling-source-code) it 
+2. open main.py with any code editor of your choice and paste your webhook on line 7
+3. run the `setup.bat` and let it do it's things
+4. a windows should popup asking for exe name and after you fixed all of that you should have your exe
 5. send exe to your victims 😈
 
-### ⚙・Compiling Source Code
+### ⚙・Manually Compiling Source Code
+If you dont feel like running build-exe.bat and compiling it like that you can
 Start of by opening a cmd in your directory and type:
 ```
 pyinstaller --onefile --clean --noconsole main.py

