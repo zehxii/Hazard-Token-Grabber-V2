@@ -2,6 +2,7 @@ requests
 psutil
 pypiwin32
 pycryptodome
+pyinstaller
 pyautogui
 numpy
 pillow
