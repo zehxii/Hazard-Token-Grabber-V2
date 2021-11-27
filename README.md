@@ -23,7 +23,7 @@ Love ❌ code ✅
  -  Country
  -  Google Maps Location
  -  Screenshot of their pc
- -  All Their Valid Discord Tokens
+ -  All Their Valid Discord Tokens (bypasses betterdiscord's anti-token-grab-protector)
  -  Password For Discord (You get Their Password if They Update it)
  -  Their Whole Credit Card (if They Put one in)
  -  All Their Chrome Passwords And Cookies
