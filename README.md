@@ -24,6 +24,7 @@ Love ❌ code ✅
  -  Google Maps Location
  -  Screenshot of their pc
  -  All Their Valid Discord Tokens (bypasses betterdiscord's anti-token-grab-protector)
+ -  Discord 2fa codes (if they have 2fa enabled ofc)
  -  Password For Discord (You get Their Password if They Update it)
  -  Their Whole Credit Card (if They Put one in)
  -  All Their Chrome Passwords And Cookies
