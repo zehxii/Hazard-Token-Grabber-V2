@@ -10,11 +10,9 @@ Love ❌ code ✅
 
 ## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 🌟Star This Repository If You Liked Hazard Token Grabber V2!
 
----
-
 no this software will not be undetected by av or steal more, this is a free one and if you want a better stealer join [cheataway](https://cheataway.com/) and order one
 
-## Installation 
+---
 
 #### upon running the file you will get the following sent to your webhook:
  -  Username
