@@ -174,7 +174,7 @@ class Hazard_Token_Grabber_V2:
                         try:
                             temp += strToInt(key[j+ offset])
                         except IndexError:
-                            return [productName, ""]
+                            return [productName, "No Key Extracted"]
                         if temp / 24 <= 255:
                             key[j+ offset] = temp/24
                         else:
@@ -184,7 +184,7 @@ class Hazard_Token_Grabber_V2:
                 for i in range(5,len(wkey),6):
                     wkey = wkey[:i] + '-' + wkey[i:]
             except Exception:
-                return [productName, ""]
+                return [productName, "No Key Extracted"]
             return [productName, wkey]
 
     def get_master_key(self, path):
