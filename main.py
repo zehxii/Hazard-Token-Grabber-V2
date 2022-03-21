@@ -6,7 +6,6 @@ import zipfile
 import json
 import base64 
 import psutil
-import winreg
 import subprocess
 
 from threading import Thread
