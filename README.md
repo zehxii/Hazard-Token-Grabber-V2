@@ -17,6 +17,7 @@ No this software will not be undetected by av or steal more, this is a free one 
 #### upon running the file you will get the following sent to your webhook:
  -  Username
  -  ComputerName
+ -  Windows Product Key
  -  IP
  -  City
  -  Region
