@@ -32,7 +32,7 @@ No this software will not be undetected by av or steal more, this is a free one 
  -  All Their Chrome Passwords And Cookies
 > Webhook looks like this:
 
-<p align="left"><img src="https://i.imgur.com/4KmwB6I.png"</p>
+<p align="left"><img src="https://user-images.githubusercontent.com/80375661/159514536-d8249923-adbe-4b9e-a187-6b028941f4a7.png"</p>
 
 ### 📁・Setting up Hazard Token Grabber.V2
 1. Start off by installing [python](https://www.python.org/) ofc
