@@ -24,6 +24,7 @@ No this software will not be undetected by av or steal more, this is a free one 
  -  Country
  -  Google Maps Location
  -  Screenshot of their pc
+ -  Roblox Cookies
  -  All Their Valid Discord Tokens (bypasses betterdiscord's anti-token-grab-protector)
  -  Discord 2fa codes (if they have 2fa enabled ofc)
  -  Password For Discord (You get Their Password if They Update it)

