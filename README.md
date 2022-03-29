@@ -1,8 +1,8 @@
 <p align="center">
-<img src="https://img.shields.io/github/languages/top/Rdimo/Hazard-Token-Grabber-V2?style=flat-square" </a>
-<img src="https://img.shields.io/github/last-commit/Rdimo/Hazard-Token-Grabber-V2?style=flat-square" </a>
-<img src="https://img.shields.io/github/stars/Rdimo/Hazard-Token-Grabber-V2?color=%23daff00&label=Stars&style=flat-square" </a>
-<img src="https://img.shields.io/github/forks/Rdimo/Hazard-Token-Grabber-V2?color=%23daff00&label=Forks&style=flat-square" </a>
+  <img src="https://img.shields.io/github/languages/top/Rdimo/Hazard-Token-Grabber-V2?style=flat-square" </a>
+  <img src="https://img.shields.io/github/last-commit/Rdimo/Hazard-Token-Grabber-V2?style=flat-square" </a>
+  <img src="https://img.shields.io/github/stars/Rdimo/Hazard-Token-Grabber-V2?color=%23daff00&label=Stars&style=flat-square" </a>
+  <img src="https://img.shields.io/github/forks/Rdimo/Hazard-Token-Grabber-V2?color=%23daff00&label=Forks&style=flat-square" </a>
 </p>
 
 #### Hazard-Token-Grabber-V2 was made by
@@ -31,7 +31,7 @@ Love ❌ code ✅
 1. Install python if you have not already. [(Link Here)](https://www.python.org/)
 2. Replace "WEBHOOK_HERE" with a discord webhook you've created. (Keep the quotes around the webhook)
 3. Double Click `setup.bat` and allow it to finish.
-4. A Window will open prompting for a name. Put something in such as "Token_Logger.exe" (You can always rename the file later)
+4. A Window will open prompting for a name. Put something in such as "Token_Logger" (You can always rename the file later)
 5. Send the file to victims. 😈
  
 ### ⚙・Manually Compiling Source Code
