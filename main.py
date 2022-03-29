@@ -19,9 +19,6 @@ config = {
 }
 
 class functions(object):
-    def __init__(self) -> None:
-        pass
-
     def getHeaders(self, token:str=None, content_type="application/json") -> dict:
         headers = {
             "Content-Type": content_type,
