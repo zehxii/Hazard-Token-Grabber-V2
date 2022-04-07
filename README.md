@@ -29,7 +29,7 @@ Love ❌ code ✅
 - Their Passwords & Credit Cards for Discord (updates when they change it)
 - All Passwords and Cookies from the Chrome Browser
   > The webhook notification looks like this:
-  <p align="left"><img src="https://user-images.githubusercontent.com/80375661/159514536-d8249923-adbe-4b9e-a187-6b028941f4a7.png">
+  <p align="left"><img src="https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/info.png">
 
 ### 📁・Setting up Hazard Token Grabber.V2
 
