@@ -46,7 +46,7 @@ If you do not want to use the batch file, you can follow this guide:
 
 1. Open command prompt in the same directory as the .py file.
 2. Type `pip install -r requirements.txt` (To install the modules)
-3. Type: `pyinstaller --clean --onefile --noconsole --i NONE main.py`, you will see a lot of text popping up. Ignore it and wait.
+3. Type: `pyinstaller --clean --onefile --noconsole -i NONE main.py`, you will see a lot of text popping up. Ignore it and wait.
 4. After it says its finishing, you can find the EXE file in the dist directory, located in the project root!
 
 ### 💾・ More options
