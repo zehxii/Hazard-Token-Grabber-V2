@@ -33,7 +33,7 @@ config = {
 
 class functions(object):
     @staticmethod
-    def getHeaders(token: str = None) -> dict[str, str]:
+    def getHeaders(token: str = None):
         headers = {
             "Content-Type": "application/json",
         }
