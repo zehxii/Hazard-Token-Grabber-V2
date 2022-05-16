@@ -63,6 +63,9 @@ Add these into the command when creating the exe if you want
 ## 💭 〢 ChangeLog
 
 ```diff
+v1.6.9 ⋮ 2022-05-16
+- Removed my accidently added webhook and enabled the defaults again,
+
 v1.6.8 ⋮ 2022-05-16
 + fixed unpack valueError bug (https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/297)
 
