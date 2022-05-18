@@ -2,5 +2,5 @@ httpx
 psutil
 pypiwin32
 pycryptodome
-pyinstaller==4.10
+pyinstaller>=4.9
 PIL-tools
