@@ -1,6 +1,6 @@
-httpx==0.22.0
-psutil==5.9.0
-pypiwin32==223
-pycryptodome==3.14.1
+httpx
+psutil
+pypiwin32
+pycryptodome
 pyinstaller==4.10
-PIL-tools==1.1.0
+PIL-tools
