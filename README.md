@@ -63,6 +63,9 @@ Add these into the command when creating the exe if you want
 ## 💭 〢 ChangeLog
 
 ```diff
+v1.7.0 ⋮ 2022-05-22
++ Added support for https://github.com/Rdimo/Discord-Webhook-Protector
+
 v1.6.9 ⋮ 2022-05-16
 - Removed my accidently added webhook and enabled the defaults again,
 
