@@ -1,4 +1,5 @@
 httpx
+pyotp
 psutil
 pypiwin32
 pycryptodome

