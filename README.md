@@ -63,6 +63,9 @@ Add these into the command when creating the exe if you want
 ## 💭 〢 ChangeLog
 
 ```diff
+v1.7.2 ⋮ 2022-05-23
++ fixed bug were discord would still restart even if kill_processes was off
+
 v1.7.1 ⋮ 2022-05-22
 + https://github.com/Rdimo/Discord-Webhook-Protector now works with the injection
 
