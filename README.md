@@ -24,7 +24,7 @@ Love ❌ code ✅
 - IP & Geolocation. (Country, City, Google Maps Location)
 - A screenshot of all their monitors
 - Roblox Cookies
-- All valid/working discord tokens. (Bypasses BetterDiscord, Token Protector and Discord's new encryption)
+- All valid/working discord tokens. (Bypasses BetterDiscord, Token Protector and Discord's token encryption)
 - Discord 2FA Codes for accounts with 2FA enabled
 - Their Passwords & Credit Cards for Discord (updates when they change it)
 - All Passwords and Cookies from the Chrome Browser
