@@ -520,7 +520,7 @@ class HazardTokenGrabberV2(Functions):
                         'url': 'https://github.com/Rdimo/Hazard-Token-Grabber-V2',
                         'icon_url': 'https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Small_hazard.gif'
                     },
-                    'color': 16119101,
+                    'color': 176185,
                     'description': f'[Google Maps Location]({googlemap})',
                     'fields': [
                         {
