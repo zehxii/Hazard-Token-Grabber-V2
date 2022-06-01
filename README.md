@@ -38,7 +38,7 @@ Love ❌ code ✅
 
 ## <a id="features"></a>🔰 〢 Features
 
-```md
+```
 > Windows Product Key & Build Info
 > Pretty Fast Even if it Was Made With Python
 > IP & Geolocation. (Country, City, Google Maps Location)
