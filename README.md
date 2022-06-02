@@ -39,8 +39,13 @@ Love ❌ code ✅
 ## <a id="features"></a>🔰 〢 Features
 
 ```
-> Windows Product Key & Build Info
+> Anti-vm/Anti-debug
+> Add to startup
+> Hides itself
+> Supports github.com/Rdimo/Discord-Webhook-Protector so webhook can't be deleted or spammed
+> Options are configurable
 > Pretty Fast Even if it Was Made With Python
+> Windows Product Key & Build Info
 > IP & Geolocation. (Country, City, Google Maps Location)
 > A screenshot of all their monitors
 > All valid/working discord tokens. (Bypasses BetterDiscord, Token Protector and Discord's new encryption)
