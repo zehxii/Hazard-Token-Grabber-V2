@@ -102,6 +102,10 @@ config = {
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.7.5 ⋮ 2022-06-02
++ added another endpoint for network info grabbing since ipinfo.io had a ratelimit (ty https://github.com/mte0 for the new endpoint)
++ added back ram check
+
 v1.7.4 ⋮ 2022-05-31
 + exits if no internet connection was established.
 + made functions match the default regular expression ^[_a-z][a-z0-9_]*$

