@@ -63,7 +63,7 @@ Love ❌ code ✅
 
 1. Install [python](https://www.python.org/) and add it to [path](https://datatofish.com/add-python-to-windows-path/).
 2. Open up [main.py](https://github.com/Rdimo/Hazard-Token-Grabber-V2/blob/master/main.py) with notepad or some other editor
-3. Locate the config at the top of the file and Replace "WEBHOOK_HERE" with a discord webhook you've created. (Keep the quotes around the webhook)
+3. Locate the config at the top of the file and Replace "WEBHOOK_HERE" with your [discord webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 4. Double Click `setup.bat` and allow it to finish.
 5. A Window will open prompting for a name. Put something in such as "Token_Logger" (You can always rename the file later)
 6. Send the file to victims. 😈
