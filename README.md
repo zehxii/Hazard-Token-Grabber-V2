@@ -36,6 +36,7 @@ Love ❌ code ✅
 - [⚙・Config](#config)
 - [🌟・Todo/Enhancements](#enhancements)
 - [📝・Changelog](#changelog)
+- [🤓・Dear skids](#skids)
 
 ## <a id="features"></a>🔰 〢 Features
 
@@ -179,3 +180,19 @@ v1.6.0 ⋮ 2022-04-08
 + cleaner embed
 + formatted code
 ```
+
+## <a id="skids"></a>🤓 〢 Dear Skids
+
+We all know you cant code for shit but skidding peoples hard work, is just not it \
+Profiting from it is just even more f*cked up \
+I hope you end up on the streets begging for spare change
+
+
+<br>
+
+<p align="center">
+🌟 <b>Enjoyed Hazard Nuker?</b> Consider dropping a star :)
+  <br>
+Made alone by Rdimo
+</p>
+<p align="center"><a href=#top>Back to Top</a></p>
