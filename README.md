@@ -23,7 +23,8 @@ Love ❌ code ✅
 
 </h2>
 
-**NOTE:** This is a free software. It will **NOT** be undetected from antiviruses, or have custom features. If you want a better one, join [CheatAway](https://cheataway.com/invite) and purchase one. 
+**NOTE:** This is a free software. It will **NOT** be undetected from antiviruses, or have custom features. If you want a better one, join [CheatAway](https://cheataway.com/invite) and purchase one.
+
 > [Why Hazardv2 won't be more OP](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/314#issuecomment-1133918906)
 
 ---
