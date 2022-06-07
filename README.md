@@ -23,8 +23,9 @@ Love ❌ code ✅
 
 </h2>
 
-**NOTE:** This is a free software. It will **NOT** be undetected from antiviruses, or have custom features. If you want a better one, join [CheatAway](https://cheataway.com/invite) and purchase one.
-
+**NOTE:** \
+This is a free software. It will **NOT** be undetected from antiviruses, or have custom features. Join [CheatAway](https://cheataway.com/invite) if you want to buy a better one. \
+Hazard was made for educational purposes, therefor all consequences cased by your actions are **your** responsibility and accountability.
 > [Why Hazardv2 won't be more OP](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/314#issuecomment-1133918906)
 
 ---
@@ -193,7 +194,7 @@ I hope you end up on the streets begging for spare change
 
 <p align="center">
 🌟 <b>Enjoyed Hazard Token Grabber V2?</b> Consider dropping a star :)
-  <br>
+<br>
 Made alone by Rdimo
 <br>
 <a href=#top>Back to Top</a></p>
