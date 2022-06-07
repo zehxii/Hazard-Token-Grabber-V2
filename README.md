@@ -191,7 +191,7 @@ I hope you end up on the streets begging for spare change
 <br>
 
 <p align="center">
-🌟 <b>Enjoyed Hazard Nuker?</b> Consider dropping a star :)
+🌟 <b>Enjoyed Hazard Token Grabber V2?</b> Consider dropping a star :)
   <br>
 Made alone by Rdimo
 <br>
