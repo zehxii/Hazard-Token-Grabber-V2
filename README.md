@@ -117,6 +117,9 @@ config = {
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.7.7 ⋮ 2022-06-12
++ fixed typo were windows version and windows key were swapped
+
 v1.7.6 ⋮ 2022-06-12
 + network and system info now gets put in a file (Systeminfo.txt)
 + program now exits if the config webhook is empty

