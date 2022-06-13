@@ -117,6 +117,9 @@ config = {
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.8.0 ⋮ 2022-06-13
++ fixed an attribute error when grabbing system info
+
 v1.7.9 ⋮ 2022-06-13
 - Fixed major bug with the injector
 

