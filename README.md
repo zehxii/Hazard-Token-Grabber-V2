@@ -117,6 +117,9 @@ config = {
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.7.8 ⋮ 2022-06-13
++ Made regex for discord-desktop-core to auto counter discord updates
+
 v1.7.7 ⋮ 2022-06-12
 + fixed typo were windows version and windows key were swapped
 
