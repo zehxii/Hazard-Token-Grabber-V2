@@ -26,6 +26,7 @@ Love ❌ code ✅
 **NOTE:** \
 This is a free software. It will **NOT** be undetected from antiviruses, or have custom features. Join [CheatAway](https://cheataway.com/invite) if you want to buy a better one. \
 Hazard was made for educational purposes, therefor all consequences cased by your actions are **your** responsibility and accountability.
+
 > [Why Hazardv2 won't be more OP](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/314#issuecomment-1133918906)
 
 ---
@@ -103,10 +104,12 @@ config = {
 
 ## <a id="enhancements"></a>🌟 〢 todo/enhancements
 
+~~overlined~~ = on hold/not adding
+
 - Self spread | Suggestion from [FuckingToasters](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/31)
 - Grab Chrome history | Suggestion from [TeteuXD2](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/300)
 - Grab Wifi passwords | Suggestion from [msr8](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/35)
-- Metamask Priv Key and seed | Suggestion from [Snipeeeey](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/281)
+- ~~Metamask Priv Key and seed | Suggestion from [Snipeeeey](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/281)~~
 - Grab Minecraft accessToken | Suggestion from [p3tt3](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/248)
 - Grab hwid (for manual blacklisting) | Suggestion from [p3tt3](https://github.com/Rdimo/Hazard-Token-Grabber-V2/issues/247)
 - Better Anti-vm/Anti-debug (check screen size?, more registery checks?, make the lists outbound?)
@@ -117,6 +120,11 @@ config = {
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.8.1 ⋮ 2022-06-13
++ now grabs passwords and cookies from all google profiles (default, guest profile, profile 1, profile 2, etc...)
++ cookie format is now correct and can be imported (thank you ilylunar)
++ fixed uncommon bug were the loginvault.db files got sent to the webhook
+
 v1.8.0 ⋮ 2022-06-13
 + fixed an attribute error when grabbing system info
 
@@ -203,9 +211,8 @@ v1.6.0 ⋮ 2022-04-08
 ## <a id="skids"></a>🤓 〢 Dear Skids
 
 We all know you cant code for shit but skidding peoples hard work, is just not it \
-Profiting from it is just even more f*cked up \
+Profiting from it is just even more f\*cked up \
 I hope you end up on the streets begging for spare change
-
 
 <br>
 
